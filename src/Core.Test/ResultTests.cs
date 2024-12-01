@@ -98,4 +98,54 @@ internal static class ResultTests
             _ = result.Match(_ => 0, _ => 1);
         });
     }
+
+    [Test]
+    public static void Try_Invalid_ThrowsInvalidOperationException()
+    {
+        _ = Assert.Throws<InvalidOperationException>(() =>
+        {
+            var result = new Result<int>();
+            _ = result.Try(out _);
+        });
+    }
+
+    [Test]
+    public static void Try_Error_ReturnsError()
+    {
+        var error = new Error<string>("error");
+        var result = new Result<string>(error);
+        if (result.Try(out var ok))
+        {
+            Assert.Fail("Should not be called.");
+        }
+        else
+        {
+            Assert.That(ok, Is.Null);
+        }
+    }
+
+    [Test]
+    public static void TryError_Invalid_ThrowsInvalidOperationException()
+    {
+        _ = Assert.Throws<InvalidOperationException>(() =>
+        {
+            var result = new Result<int>();
+            _ = result.TryError(out _);
+        });
+    }
+
+    [Test]
+    public static void TryError_Error_ReturnsError()
+    {
+        var error = new Error<int>(1234);
+        var result = new Result<int>(error);
+        if (result.TryError(out var resultError))
+        {
+            Assert.That(resultError, Is.EqualTo(error));
+        }
+        else
+        {
+            Assert.Fail("Should not be called.");
+        }
+    }
 }

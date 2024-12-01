@@ -217,4 +217,54 @@ public readonly struct Result<TOk> : IEquatable<Result<TOk>>
             _ => throw new UnreachableException()
         };
     }
+
+    /// <summary>
+    ///     Tries to return the 'OK' value.
+    /// </summary>
+    /// <param name="ok">The 'OK' value.</param>
+    /// <returns>True if OK, false otherwise.</returns>
+    /// <exception cref="InvalidOperationException">Thrown if state is Invalid.</exception>
+    /// <exception cref="UnreachableException">Thrown if the state is unknown.</exception>
+    [SuppressMessage("ReSharper", "NullableWarningSuppressionIsUsed")]
+    public bool Try([NotNullWhen(true)] out TOk? ok)
+    {
+        switch (this._state)
+        {
+            case ResultState.Ok:
+                ok = this._ok!;
+                return true;
+            case ResultState.Failure:
+                ok = default;
+                return false;
+            case ResultState.Invalid:
+                throw new InvalidOperationException();
+            default:
+                throw new UnreachableException();
+        }
+    }
+
+    /// <summary>
+    ///     Tries to get the 'Error' value.
+    /// </summary>
+    /// <param name="error">The 'Error' value.</param>
+    /// <returns>True if failure, false otherwise.</returns>
+    /// <exception cref="InvalidOperationException">Thrown if state is Invalid.</exception>
+    /// <exception cref="UnreachableException">Thrown if the state is unknown.</exception>
+    [SuppressMessage("ReSharper", "NullableWarningSuppressionIsUsed")]
+    public bool TryError([NotNullWhen(true)] out Error? error)
+    {
+        switch (this._state)
+        {
+            case ResultState.Ok:
+                error = default;
+                return false;
+            case ResultState.Failure:
+                error = this._error!;
+                return true;
+            case ResultState.Invalid:
+                throw new InvalidOperationException();
+            default:
+                throw new UnreachableException();
+        }
+    }
 }
