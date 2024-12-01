@@ -8,8 +8,19 @@ namespace SleepingBear.Monad.Core;
 /// </summary>
 public enum ResultState
 {
+    /// <summary>
+    ///     Invalid state - indicates the Result struct was constructed with the default constructor.
+    /// </summary>
     Invalid = 0,
+
+    /// <summary>
+    ///     OK state.
+    /// </summary>
     Ok,
+
+    /// <summary>
+    ///     Failure state.
+    /// </summary>
     Failure
 }
 
