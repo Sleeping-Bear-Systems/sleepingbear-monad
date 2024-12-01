@@ -1,4 +1,7 @@
-﻿namespace SleepingBear.Monad.Core;
+﻿using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
+
+namespace SleepingBear.Monad.Core;
 
 public enum ResultState
 {
@@ -78,5 +81,33 @@ public readonly struct Result<TOk> : IEquatable<Result<TOk>>
         return this._state == other._state &&
                EqualityComparer<TOk?>.Default.Equals(this._ok, other._ok) &&
                Equals(this._error, other._error);
+    }
+
+    [SuppressMessage("ReSharper", "NullableWarningSuppressionIsUsed")]
+    public Result<TOkOut> Map<TOkOut>(Func<TOk, TOkOut> map)
+    {
+        ArgumentNullException.ThrowIfNull(map);
+
+        return this._state switch
+        {
+            ResultState.Ok => new Result<TOkOut>(map(this._ok!)),
+            ResultState.Failure => new Result<TOkOut>(this._error!),
+            ResultState.Invalid => throw new InvalidOperationException(),
+            _ => throw new UnreachableException()
+        };
+    }
+
+    [SuppressMessage("ReSharper", "NullableWarningSuppressionIsUsed")]
+    public Result<TOk> MapFailure(Func<Error, Error> map)
+    {
+        ArgumentNullException.ThrowIfNull(map);
+
+        return this._state switch
+        {
+            ResultState.Ok => this,
+            ResultState.Failure => new Result<TOk>(map(this._error!)),
+            ResultState.Invalid => throw new InvalidOperationException(),
+            _ => throw new UnreachableException()
+        };
     }
 }

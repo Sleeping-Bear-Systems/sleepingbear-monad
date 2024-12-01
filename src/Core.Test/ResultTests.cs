@@ -35,4 +35,24 @@ internal static class ResultTests
         Assert.That(ok, Is.EqualTo(0));
         Assert.That(resultError, Is.EqualTo(error));
     }
+
+    [Test]
+    public static void Map_Invalid_ThrowsInvalidOperationException()
+    {
+        _ = Assert.Throws<InvalidOperationException>(() =>
+        {
+            var result = new Result<int>();
+            _ = result.Map(ok => ok);
+        });
+    }
+
+    [Test]
+    public static void MapFailure_Invalid_ThrowsInvalidOperationException()
+    {
+        _ = Assert.Throws<InvalidOperationException>(() =>
+        {
+            var result = new Result<int>();
+            _ = result.MapFailure(error => error);
+        });
+    }
 }
