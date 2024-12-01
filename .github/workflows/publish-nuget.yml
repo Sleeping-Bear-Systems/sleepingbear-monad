@@ -4,30 +4,35 @@
 name: Publish NuGet
 
 on:
-  workflow_dispatch:
-    inputs:
-      version:
-        description: 'Version'
-        required: true
-        default: '0.0.0'
+    workflow_dispatch:
+        inputs:
+            version:
+                description: "Version"
+                required: true
+                default: "0.0.0"
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+    build:
+        runs-on: ubuntu-latest
 
-    steps:
-    - uses: actions/checkout@v4
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: 9.0.x
-    - name: Restore dependencies
-      run: dotnet restore
-    - name: Build
-      env:
-        VERSION: ${{ github.event.inputs.version }}
-      run: dotnet build --no-restore /p:Version=$VERSION /p:ContinuousIntegrationBuild=true -c Release
-    - name: Test
-      run: dotnet test --no-build --verbosity normal -c Release
-    - name: Push
-      run: dotnet nuget push "**/*.nupkg" --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }}
+        steps:
+            - uses: actions/checkout@v4
+
+            - name: Setup .NET
+              uses: actions/setup-dotnet@v4
+              with:
+                  dotnet-version: 9.0.x
+
+            - name: Restore dependencies
+              run: dotnet restore
+
+            - name: Build
+              env:
+                  VERSION: ${{ github.event.inputs.version }}
+              run: dotnet build --no-restore /p:ContinuousIntegrationBuild=true -c Release /p:Version=$VERSION
+
+            - name: Test
+              run: dotnet test --no-build --verbosity normal -c Release
+
+            - name: Push
+              run: dotnet nuget push "**/*.nupkg" --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }}
