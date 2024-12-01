@@ -42,14 +42,14 @@ public static class TaskExtensions
         return state switch
         {
             ResultState.Ok => await bind(ok!).ConfigureAwait(false),
-            ResultState.Failure => new Result<TOkOut>(error!),
+            ResultState.Error => new Result<TOkOut>(error!),
             ResultState.Invalid => throw new InvalidOperationException(),
             _ => throw new UnreachableException()
         };
     }
 
     /// <summary>
-    ///     Async version of the bind failure method of <see cref="Result{TOk}" />.
+    ///     Async version of the bind error method of <see cref="Result{TOk}" />.
     /// </summary>
     /// <param name="task">The task.</param>
     /// <param name="bind">The binding function.</param>
@@ -58,7 +58,7 @@ public static class TaskExtensions
     /// <exception cref="InvalidOperationException">Thrown if state is Invalid.</exception>
     /// <exception cref="UnreachableException">Thrown if the state is unknown.</exception>
     [SuppressMessage("ReSharper", "NullableWarningSuppressionIsUsed")]
-    public static async Task<Result<TOk>> BindFailureAsync<TOk>(
+    public static async Task<Result<TOk>> BindErrorAsync<TOk>(
         this Task<Result<TOk>> task,
         Func<Error, Task<Result<TOk>>> bind) where TOk : notnull
     {
@@ -70,7 +70,7 @@ public static class TaskExtensions
         return state switch
         {
             ResultState.Ok => result,
-            ResultState.Failure => await bind(error!).ConfigureAwait(false),
+            ResultState.Error => await bind(error!).ConfigureAwait(false),
             ResultState.Invalid => throw new InvalidOperationException(),
             _ => throw new UnreachableException()
         };
@@ -99,14 +99,14 @@ public static class TaskExtensions
         return state switch
         {
             ResultState.Ok => new Result<TOkOut>(await bind(ok!).ConfigureAwait(false)),
-            ResultState.Failure => new Result<TOkOut>(error!),
+            ResultState.Error => new Result<TOkOut>(error!),
             ResultState.Invalid => throw new InvalidOperationException(),
             _ => throw new UnreachableException()
         };
     }
 
     /// <summary>
-    ///     Async version of the map failure method of <see cref="Result{TOk}" />.
+    ///     Async version of the map error method of <see cref="Result{TOk}" />.
     /// </summary>
     /// <param name="task">The task.</param>
     /// <param name="bind">The mapping function.</param>
@@ -115,7 +115,7 @@ public static class TaskExtensions
     /// <exception cref="InvalidOperationException">Thrown if state is Invalid.</exception>
     /// <exception cref="UnreachableException">Thrown if the state is unknown.</exception>
     [SuppressMessage("ReSharper", "NullableWarningSuppressionIsUsed")]
-    public static async Task<Result<TOk>> MapFailureAsync<TOk>(
+    public static async Task<Result<TOk>> MapErrorAsync<TOk>(
         this Task<Result<TOk>> task,
         Func<Error, Task<Error>> bind) where TOk : notnull
     {
@@ -127,7 +127,7 @@ public static class TaskExtensions
         return state switch
         {
             ResultState.Ok => result,
-            ResultState.Failure => new Result<TOk>(await bind(error!).ConfigureAwait(false)),
+            ResultState.Error => new Result<TOk>(await bind(error!).ConfigureAwait(false)),
             ResultState.Invalid => throw new InvalidOperationException(),
             _ => throw new UnreachableException()
         };
@@ -159,7 +159,7 @@ public static class TaskExtensions
         return state switch
         {
             ResultState.Ok => await okFunc(ok!).ConfigureAwait(false),
-            ResultState.Failure => await errorFunc(error!).ConfigureAwait(false),
+            ResultState.Error => await errorFunc(error!).ConfigureAwait(false),
             ResultState.Invalid => throw new InvalidOperationException(),
             _ => throw new UnreachableException()
         };

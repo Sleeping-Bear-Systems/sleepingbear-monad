@@ -19,14 +19,14 @@ internal static class ResultExtensionTests
     }
 
     [Test]
-    public static void ToFailure_ValidatesBehavior()
+    public static void ToResultError_ValidatesBehavior()
     {
         var error = new Error<int>(1234);
-        var result = error.ToFailure<string>();
+        var result = error.ToResultError<string>();
         result.Deconstruct(out var state, out var ok, out var resultError);
         Assert.Multiple(() =>
         {
-            Assert.That(state, Is.EqualTo(ResultState.Failure));
+            Assert.That(state, Is.EqualTo(ResultState.Error));
             Assert.That(ok, Is.Null);
             Assert.That(resultError, Is.EqualTo(error));
         });

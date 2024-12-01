@@ -13,7 +13,7 @@ internal static class ResultTests
         Assert.Multiple(() =>
         {
             Assert.That(result.IsOk, Is.False);
-            Assert.That(result.IsFailure, Is.False);
+            Assert.That(result.IsError, Is.False);
             Assert.That(state, Is.EqualTo(ResultState.Invalid));
             Assert.That(ok, Is.EqualTo(0));
             Assert.That(error, Is.Null);
@@ -28,7 +28,7 @@ internal static class ResultTests
         Assert.Multiple(() =>
         {
             Assert.That(result.IsOk, Is.True);
-            Assert.That(result.IsFailure, Is.False);
+            Assert.That(result.IsError, Is.False);
             Assert.That(state, Is.EqualTo(ResultState.Ok));
             Assert.That(ok, Is.EqualTo(1234));
             Assert.That(error, Is.Null);
@@ -36,14 +36,14 @@ internal static class ResultTests
     }
 
     [Test]
-    public static void Ctor_Error_FailureState()
+    public static void Ctor_Error_ErrorState()
     {
         var error = new Error<int>(1234);
         var result = new Result<int>(error);
         result.Deconstruct(out var state, out var ok, out var resultError);
         Assert.Multiple(() =>
         {
-            Assert.That(state, Is.EqualTo(ResultState.Failure));
+            Assert.That(state, Is.EqualTo(ResultState.Error));
             Assert.That(ok, Is.EqualTo(0));
             Assert.That(resultError, Is.EqualTo(error));
         });
@@ -60,12 +60,12 @@ internal static class ResultTests
     }
 
     [Test]
-    public static void MapFailure_Invalid_ThrowsInvalidOperationException()
+    public static void MapError_Invalid_ThrowsInvalidOperationException()
     {
         _ = Assert.Throws<InvalidOperationException>(() =>
         {
             var result = new Result<int>();
-            _ = result.MapFailure(error => error);
+            _ = result.MapError(error => error);
         });
     }
 
@@ -80,12 +80,12 @@ internal static class ResultTests
     }
 
     [Test]
-    public static void BindFailure_Invalid_ThrowsInvalidOperationException()
+    public static void BindError_Invalid_ThrowsInvalidOperationException()
     {
         _ = Assert.Throws<InvalidOperationException>(() =>
         {
             var result = new Result<int>();
-            _ = result.BindFailure(error => new Result<int>(error));
+            _ = result.BindError(error => new Result<int>(error));
         });
     }
 

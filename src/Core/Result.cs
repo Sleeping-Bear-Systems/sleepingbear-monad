@@ -19,9 +19,9 @@ public enum ResultState
     Ok,
 
     /// <summary>
-    ///     Failure state.
+    ///     Error state.
     /// </summary>
-    Failure
+    Error
 }
 
 /// <summary>
@@ -46,7 +46,7 @@ public readonly struct Result<TOk> : IEquatable<Result<TOk>>
     {
         this._ok = default;
         this._error = error;
-        this._state = ResultState.Failure;
+        this._state = ResultState.Error;
     }
 
     /// <summary>
@@ -55,16 +55,16 @@ public readonly struct Result<TOk> : IEquatable<Result<TOk>>
     public bool IsOk => this._state == ResultState.Ok;
 
     /// <summary>
-    ///     Indicates the result in the 'Failure' state.
+    ///     Indicates the result in the 'Error' state.
     /// </summary>
-    public bool IsFailure => this._state == ResultState.Failure;
+    public bool IsError => this._state == ResultState.Error;
 
     /// <summary>
     ///     Deconstructs the result.
     /// </summary>
     /// <param name="state">The state.</param>
     /// <param name="ok">The OK value.</param>
-    /// <param name="error">The failure value.</param>
+    /// <param name="error">The error value.</param>
     public void Deconstruct(out ResultState state, out TOk? ok, out Error? error)
     {
         state = this._state;
@@ -124,7 +124,7 @@ public readonly struct Result<TOk> : IEquatable<Result<TOk>>
         return this._state switch
         {
             ResultState.Ok => new Result<TOkOut>(map(this._ok!)),
-            ResultState.Failure => new Result<TOkOut>(this._error!),
+            ResultState.Error => new Result<TOkOut>(this._error!),
             ResultState.Invalid => throw new InvalidOperationException(),
             _ => throw new UnreachableException()
         };
@@ -138,14 +138,14 @@ public readonly struct Result<TOk> : IEquatable<Result<TOk>>
     /// <exception cref="InvalidOperationException">Thrown if state is Invalid.</exception>
     /// <exception cref="UnreachableException">Thrown if the state is unknown.</exception>
     [SuppressMessage("ReSharper", "NullableWarningSuppressionIsUsed")]
-    public Result<TOk> MapFailure(Func<Error, Error> map)
+    public Result<TOk> MapError(Func<Error, Error> map)
     {
         ArgumentNullException.ThrowIfNull(map);
 
         return this._state switch
         {
             ResultState.Ok => this,
-            ResultState.Failure => new Result<TOk>(map(this._error!)),
+            ResultState.Error => new Result<TOk>(map(this._error!)),
             ResultState.Invalid => throw new InvalidOperationException(),
             _ => throw new UnreachableException()
         };
@@ -167,7 +167,7 @@ public readonly struct Result<TOk> : IEquatable<Result<TOk>>
         return this._state switch
         {
             ResultState.Ok => bind(this._ok!),
-            ResultState.Failure => new Result<TOkOut>(this._error!),
+            ResultState.Error => new Result<TOkOut>(this._error!),
             ResultState.Invalid => throw new InvalidOperationException(),
             _ => throw new UnreachableException()
         };
@@ -181,14 +181,14 @@ public readonly struct Result<TOk> : IEquatable<Result<TOk>>
     /// <exception cref="InvalidOperationException">Thrown if state is Invalid.</exception>
     /// <exception cref="UnreachableException">Thrown if the state is unknown.</exception>
     [SuppressMessage("ReSharper", "NullableWarningSuppressionIsUsed")]
-    public Result<TOk> BindFailure(Func<Error, Result<TOk>> bind)
+    public Result<TOk> BindError(Func<Error, Result<TOk>> bind)
     {
         ArgumentNullException.ThrowIfNull(bind);
 
         return this._state switch
         {
             ResultState.Ok => this,
-            ResultState.Failure => bind(this._error!),
+            ResultState.Error => bind(this._error!),
             ResultState.Invalid => throw new InvalidOperationException(),
             _ => throw new UnreachableException()
         };
@@ -212,7 +212,7 @@ public readonly struct Result<TOk> : IEquatable<Result<TOk>>
         return this._state switch
         {
             ResultState.Ok => ok(this._ok!),
-            ResultState.Failure => error(this._error!),
+            ResultState.Error => error(this._error!),
             ResultState.Invalid => throw new InvalidOperationException(),
             _ => throw new UnreachableException()
         };
@@ -233,7 +233,7 @@ public readonly struct Result<TOk> : IEquatable<Result<TOk>>
             case ResultState.Ok:
                 ok = this._ok!;
                 return true;
-            case ResultState.Failure:
+            case ResultState.Error:
                 ok = default;
                 return false;
             case ResultState.Invalid:
@@ -247,7 +247,7 @@ public readonly struct Result<TOk> : IEquatable<Result<TOk>>
     ///     Tries to get the 'Error' value.
     /// </summary>
     /// <param name="error">The 'Error' value.</param>
-    /// <returns>True if failure, false otherwise.</returns>
+    /// <returns>True if error, false otherwise.</returns>
     /// <exception cref="InvalidOperationException">Thrown if state is Invalid.</exception>
     /// <exception cref="UnreachableException">Thrown if the state is unknown.</exception>
     [SuppressMessage("ReSharper", "NullableWarningSuppressionIsUsed")]
@@ -258,7 +258,7 @@ public readonly struct Result<TOk> : IEquatable<Result<TOk>>
             case ResultState.Ok:
                 error = default;
                 return false;
-            case ResultState.Failure:
+            case ResultState.Error:
                 error = this._error!;
                 return true;
             case ResultState.Invalid:

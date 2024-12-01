@@ -27,7 +27,7 @@ public readonly struct Maybe<TSome> : IEquatable<Maybe<TSome>> where TSome : not
     public bool IsSome { get; }
 
     /// <summary>
-    ///     Indicates the maybe is in the 'Failure' state.
+    ///     Indicates the maybe is in the 'None' state.
     /// </summary>
     public bool IsNone => !this.IsSome;
 
