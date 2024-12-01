@@ -112,7 +112,6 @@ public readonly struct Result<TOk> : IEquatable<Result<TOk>>
     /// <returns>A <see cref="Result{TOk}" />.</returns>
     /// <exception cref="InvalidOperationException">Thrown if state is Invalid.</exception>
     /// <exception cref="UnreachableException">Thrown if the state is unknown.</exception>
-    /// <returns>A <see cref="Result{TOk}" />.</returns>
     [SuppressMessage("ReSharper", "NullableWarningSuppressionIsUsed")]
     public Result<TOk> MapFailure(Func<Error, Error> map)
     {
@@ -128,13 +127,13 @@ public readonly struct Result<TOk> : IEquatable<Result<TOk>>
     }
 
     /// <summary>
-    ///     Bind a <see cref="Result{TOk}" />.
+    /// Binds a <see cref="Result{TOk}"/>.
     /// </summary>
     /// <param name="bind">The binding function.</param>
-    /// <returns>A <see cref="Result{TOk}" />.</returns>
+    /// <typeparam name="TOkOut">The output OK type.</typeparam>
+    /// <returns>A <see cref="Result{TOk}"/>.</returns>
     /// <exception cref="InvalidOperationException">Thrown if state is Invalid.</exception>
     /// <exception cref="UnreachableException">Thrown if the state is unknown.</exception>
-    /// <returns>A <see cref="Result{TOk}" />.</returns>
     [SuppressMessage("ReSharper", "NullableWarningSuppressionIsUsed")]
     public Result<TOkOut> Bind<TOkOut>(Func<TOk, Result<TOkOut>> bind)
     {
@@ -144,6 +143,28 @@ public readonly struct Result<TOk> : IEquatable<Result<TOk>>
         {
             ResultState.Ok => bind(this._ok!),
             ResultState.Failure => new Result<TOkOut>(this._error!),
+            ResultState.Invalid => throw new InvalidOperationException(),
+            _ => throw new UnreachableException()
+        };
+    }
+    
+    /// <summary>
+    ///     Bind a <see cref="Result{TOk}" />.
+    /// </summary>
+    /// <param name="bind">The binding function.</param>
+    /// <returns>A <see cref="Result{TOk}" />.</returns>
+    /// <exception cref="InvalidOperationException">Thrown if state is Invalid.</exception>
+    /// <exception cref="UnreachableException">Thrown if the state is unknown.</exception>
+    /// <returns>A <see cref="Result{TOk}" />.</returns>
+    [SuppressMessage("ReSharper", "NullableWarningSuppressionIsUsed")]
+    public Result<TOk> BindFailure(Func<Error, Result<TOk>> bind)
+    {
+        ArgumentNullException.ThrowIfNull(bind);
+
+        return this._state switch
+        {
+            ResultState.Ok => this,
+            ResultState.Failure => bind(this._error!),
             ResultState.Invalid => throw new InvalidOperationException(),
             _ => throw new UnreachableException()
         };
