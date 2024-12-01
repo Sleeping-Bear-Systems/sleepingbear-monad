@@ -6,9 +6,8 @@
 internal static class TaskExtensionsTests
 {
     [Test]
-    public static async Task BindAsync_Invalid_ThrowsInvalidOperationException()
+    public static Task BindAsync_Invalid_ThrowsInvalidOperationException()
     {
-        await Task.Delay(0).ConfigureAwait(false);
         _ = Assert.ThrowsAsync<InvalidOperationException>(async () =>
         {
             _ = await new Result<int>()
@@ -16,12 +15,12 @@ internal static class TaskExtensionsTests
                 .BindAsync(ok => ok.ToOk().ToTask())
                 .ConfigureAwait(false);
         });
+        return Task.CompletedTask;
     }
 
     [Test]
-    public static async Task BindFailureAsync_Invalid_ThrowsInvalidOperationException()
+    public static Task BindFailureAsync_Invalid_ThrowsInvalidOperationException()
     {
-        await Task.Delay(0).ConfigureAwait(false);
         _ = Assert.ThrowsAsync<InvalidOperationException>(async () =>
         {
             _ = await new Result<int>()
@@ -29,12 +28,12 @@ internal static class TaskExtensionsTests
                 .BindFailureAsync(error => error.ToFailure<int>().ToTask())
                 .ConfigureAwait(false);
         });
+        return Task.CompletedTask;
     }
 
     [Test]
-    public static async Task MapAsync_Invalid_ThrowsInvalidOperationException()
+    public static Task MapAsync_Invalid_ThrowsInvalidOperationException()
     {
-        await Task.Delay(0).ConfigureAwait(false);
         _ = Assert.ThrowsAsync<InvalidOperationException>(async () =>
         {
             _ = await new Result<int>()
@@ -42,12 +41,12 @@ internal static class TaskExtensionsTests
                 .MapAsync(ok => ok.ToTask())
                 .ConfigureAwait(false);
         });
+        return Task.CompletedTask;
     }
 
     [Test]
-    public static async Task MapFailureAsync_Invalid_ThrowsInvalidOperationException()
+    public static Task MapFailureAsync_Invalid_ThrowsInvalidOperationException()
     {
-        await Task.Delay(0).ConfigureAwait(false);
         _ = Assert.ThrowsAsync<InvalidOperationException>(async () =>
         {
             _ = await new Result<int>()
@@ -55,12 +54,12 @@ internal static class TaskExtensionsTests
                 .MapFailureAsync(error => error.ToTask())
                 .ConfigureAwait(false);
         });
+        return Task.CompletedTask;
     }
 
     [Test]
-    public static async Task MatchAsync_Invalid_ThrowsInvalidOperationException()
+    public static Task MatchAsync_Invalid_ThrowsInvalidOperationException()
     {
-        await Task.Delay(0).ConfigureAwait(false);
         _ = Assert.ThrowsAsync<InvalidOperationException>(async () =>
         {
             _ = await new Result<int>()
@@ -68,5 +67,6 @@ internal static class TaskExtensionsTests
                 .MatchAsync(_ => 0.ToTask(), _ => 1.ToTask())
                 .ConfigureAwait(false);
         });
+        return Task.CompletedTask;
     }
 }
