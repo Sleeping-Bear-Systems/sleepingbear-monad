@@ -19,13 +19,13 @@ internal static class TaskExtensionsTests
     }
 
     [Test]
-    public static Task BindFailureAsync_Invalid_ThrowsInvalidOperationException()
+    public static Task BindErrorAsync_Invalid_ThrowsInvalidOperationException()
     {
         _ = Assert.ThrowsAsync<InvalidOperationException>(async () =>
         {
             _ = await new Result<int>()
                 .ToTask()
-                .BindFailureAsync(error => error.ToFailure<int>().ToTask())
+                .BindErrorAsync(error => error.ToResultError<int>().ToTask())
                 .ConfigureAwait(false);
         });
         return Task.CompletedTask;
@@ -45,13 +45,13 @@ internal static class TaskExtensionsTests
     }
 
     [Test]
-    public static Task MapFailureAsync_Invalid_ThrowsInvalidOperationException()
+    public static Task MapErrorAsync_Invalid_ThrowsInvalidOperationException()
     {
         _ = Assert.ThrowsAsync<InvalidOperationException>(async () =>
         {
             _ = await new Result<int>()
                 .ToTask()
-                .MapFailureAsync(error => error.ToTask())
+                .MapErrorAsync(error => error.ToTask())
                 .ConfigureAwait(false);
         });
         return Task.CompletedTask;
