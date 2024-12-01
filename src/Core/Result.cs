@@ -49,6 +49,16 @@ public readonly struct Result<TOk> : IEquatable<Result<TOk>>
     }
 
     /// <summary>
+    ///     Indicates the result is in the 'OK' state.
+    /// </summary>
+    public bool IsOk => this._state == ResultState.Ok;
+
+    /// <summary>
+    ///     Indicates the result in the 'Failure' state.
+    /// </summary>
+    public bool IsFailure => this._state == ResultState.Failure;
+
+    /// <summary>
     ///     Deconstructs the result.
     /// </summary>
     /// <param name="state">The state.</param>
