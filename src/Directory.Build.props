@@ -1,0 +1,16 @@
+<Project>
+  <!-- See https://aka.ms/dotnet/msbuild/customize for more details on customizing your build -->
+  <PropertyGroup>
+    <AnalysisMode>AllEnabledByDefault</AnalysisMode>
+    <CodeAnalysisTreatWarningsAsErrors>true</CodeAnalysisTreatWarningsAsErrors>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>13.0</LangVersion>
+    <Nullable>enable</Nullable>
+    <TargetFramework>net9.0</TargetFramework>
+    <WarningsAsErrors>true</WarningsAsErrors>
+    <Company>Sleeping Bear Systems</Company>
+    <Authors>Charles Farris</Authors>
+    <Copyright>Copyright (c) 2024-$([System.DateTime]::Now.Year.ToString()) Sleeping Bear Systems - Charles Farris</Copyright>
+  </PropertyGroup>
+</Project>
