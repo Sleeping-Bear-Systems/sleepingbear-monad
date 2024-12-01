@@ -4,13 +4,22 @@
         <AnalysisMode>AllEnabledByDefault</AnalysisMode>
         <CodeAnalysisTreatWarningsAsErrors>true</CodeAnalysisTreatWarningsAsErrors>
         <EnableNETAnalyzers>true</EnableNETAnalyzers>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <ImplicitUsings>enable</ImplicitUsings>
         <LangVersion>13.0</LangVersion>
         <Nullable>enable</Nullable>
         <TargetFramework>net9.0</TargetFramework>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
         <WarningsAsErrors>true</WarningsAsErrors>
-        <Company>Sleeping Bear Systems</Company>
+    </PropertyGroup>
+
+    <PropertyGroup>
         <Authors>Charles Farris</Authors>
+        <Company>Sleeping Bear Systems</Company>
         <Copyright>Copyright (c) 2024-$([System.DateTime]::Now.Year.ToString()) Sleeping Bear Systems - Charles Farris</Copyright>
+        <DebugType>embedded</DebugType>
+        <EmbedUntrackedSources>true</EmbedUntrackedSources>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
     </PropertyGroup>
 </Project>
