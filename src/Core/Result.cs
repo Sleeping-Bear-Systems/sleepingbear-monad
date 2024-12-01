@@ -112,6 +112,7 @@ public readonly struct Result<TOk> : IEquatable<Result<TOk>>
     /// <returns>A <see cref="Result{TOk}" />.</returns>
     /// <exception cref="InvalidOperationException">Thrown if state is Invalid.</exception>
     /// <exception cref="UnreachableException">Thrown if the state is unknown.</exception>
+    /// <returns>A <see cref="Result{TOk}" />.</returns>
     [SuppressMessage("ReSharper", "NullableWarningSuppressionIsUsed")]
     public Result<TOk> MapFailure(Func<Error, Error> map)
     {
@@ -121,6 +122,28 @@ public readonly struct Result<TOk> : IEquatable<Result<TOk>>
         {
             ResultState.Ok => this,
             ResultState.Failure => new Result<TOk>(map(this._error!)),
+            ResultState.Invalid => throw new InvalidOperationException(),
+            _ => throw new UnreachableException()
+        };
+    }
+
+    /// <summary>
+    ///     Bind a <see cref="Result{TOk}" />.
+    /// </summary>
+    /// <param name="bind">The binding function.</param>
+    /// <returns>A <see cref="Result{TOk}" />.</returns>
+    /// <exception cref="InvalidOperationException">Thrown if state is Invalid.</exception>
+    /// <exception cref="UnreachableException">Thrown if the state is unknown.</exception>
+    /// <returns>A <see cref="Result{TOk}" />.</returns>
+    [SuppressMessage("ReSharper", "NullableWarningSuppressionIsUsed")]
+    public Result<TOkOut> Bind<TOkOut>(Func<TOk, Result<TOkOut>> bind)
+    {
+        ArgumentNullException.ThrowIfNull(bind);
+
+        return this._state switch
+        {
+            ResultState.Ok => bind(this._ok!),
+            ResultState.Failure => new Result<TOkOut>(this._error!),
             ResultState.Invalid => throw new InvalidOperationException(),
             _ => throw new UnreachableException()
         };

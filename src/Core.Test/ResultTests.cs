@@ -55,4 +55,14 @@ internal static class ResultTests
             _ = result.MapFailure(error => error);
         });
     }
+
+    [Test]
+    public static void Bind_Invalid_ThrowsInvalidOperationException()
+    {
+        _ = Assert.Throws<InvalidOperationException>(() =>
+        {
+            var result = new Result<int>();
+            _ = result.Bind(ok => new Result<int>(ok));
+        });
+    }
 }
