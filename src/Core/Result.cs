@@ -29,6 +29,7 @@ public enum ResultState
 /// </summary>
 /// <typeparam name="TOk">The OK type.</typeparam>
 public readonly struct Result<TOk> : IEquatable<Result<TOk>>
+    where TOk : notnull
 {
     private readonly ResultState _state;
     private readonly TOk? _ok;
@@ -116,7 +117,7 @@ public readonly struct Result<TOk> : IEquatable<Result<TOk>>
     /// <exception cref="InvalidOperationException">Thrown if state is Invalid.</exception>
     /// <exception cref="UnreachableException">Thrown if the state is unknown.</exception>
     [SuppressMessage("ReSharper", "NullableWarningSuppressionIsUsed")]
-    public Result<TOkOut> Map<TOkOut>(Func<TOk, TOkOut> map)
+    public Result<TOkOut> Map<TOkOut>(Func<TOk, TOkOut> map) where TOkOut : notnull
     {
         ArgumentNullException.ThrowIfNull(map);
 
@@ -159,7 +160,7 @@ public readonly struct Result<TOk> : IEquatable<Result<TOk>>
     /// <exception cref="InvalidOperationException">Thrown if state is Invalid.</exception>
     /// <exception cref="UnreachableException">Thrown if the state is unknown.</exception>
     [SuppressMessage("ReSharper", "NullableWarningSuppressionIsUsed")]
-    public Result<TOkOut> Bind<TOkOut>(Func<TOk, Result<TOkOut>> bind)
+    public Result<TOkOut> Bind<TOkOut>(Func<TOk, Result<TOkOut>> bind) where TOkOut : notnull
     {
         ArgumentNullException.ThrowIfNull(bind);
 

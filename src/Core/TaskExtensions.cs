@@ -32,7 +32,7 @@ public static class TaskExtensions
     [SuppressMessage("ReSharper", "NullableWarningSuppressionIsUsed")]
     public static async Task<Result<TOkOut>> BindAsync<TOk, TOkOut>(
         this Task<Result<TOk>> task,
-        Func<TOk, Task<Result<TOkOut>>> bind)
+        Func<TOk, Task<Result<TOkOut>>> bind) where TOk : notnull where TOkOut : notnull
     {
         ArgumentNullException.ThrowIfNull(task);
         ArgumentNullException.ThrowIfNull(bind);
@@ -60,7 +60,7 @@ public static class TaskExtensions
     [SuppressMessage("ReSharper", "NullableWarningSuppressionIsUsed")]
     public static async Task<Result<TOk>> BindFailureAsync<TOk>(
         this Task<Result<TOk>> task,
-        Func<Error, Task<Result<TOk>>> bind)
+        Func<Error, Task<Result<TOk>>> bind) where TOk : notnull
     {
         ArgumentNullException.ThrowIfNull(task);
         ArgumentNullException.ThrowIfNull(bind);
@@ -89,7 +89,7 @@ public static class TaskExtensions
     [SuppressMessage("ReSharper", "NullableWarningSuppressionIsUsed")]
     public static async Task<Result<TOkOut>> MapAsync<TOk, TOkOut>(
         this Task<Result<TOk>> task,
-        Func<TOk, Task<TOkOut>> bind)
+        Func<TOk, Task<TOkOut>> bind) where TOk : notnull where TOkOut : notnull
     {
         ArgumentNullException.ThrowIfNull(task);
         ArgumentNullException.ThrowIfNull(bind);
@@ -117,7 +117,7 @@ public static class TaskExtensions
     [SuppressMessage("ReSharper", "NullableWarningSuppressionIsUsed")]
     public static async Task<Result<TOk>> MapFailureAsync<TOk>(
         this Task<Result<TOk>> task,
-        Func<Error, Task<Error>> bind)
+        Func<Error, Task<Error>> bind) where TOk : notnull
     {
         ArgumentNullException.ThrowIfNull(task);
         ArgumentNullException.ThrowIfNull(bind);
@@ -148,7 +148,7 @@ public static class TaskExtensions
     public static async Task<TOut> MatchAsync<TOk, TOut>(
         this Task<Result<TOk>> task,
         Func<TOk, Task<TOut>> okFunc,
-        Func<Error, Task<TOut>> errorFunc)
+        Func<Error, Task<TOut>> errorFunc) where TOk : notnull
     {
         ArgumentNullException.ThrowIfNull(task);
         ArgumentNullException.ThrowIfNull(okFunc);
