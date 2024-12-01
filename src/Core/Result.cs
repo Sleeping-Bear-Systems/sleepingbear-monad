@@ -83,6 +83,14 @@ public readonly struct Result<TOk> : IEquatable<Result<TOk>>
                Equals(this._error, other._error);
     }
 
+    /// <summary>
+    ///     Map a <see cref="Result{TOk}" />.
+    /// </summary>
+    /// <param name="map">The mapping function.</param>
+    /// <typeparam name="TOkOut">The output OK type.</typeparam>
+    /// <returns>A <see cref="Result{TOk}" />.</returns>
+    /// <exception cref="InvalidOperationException">Thrown if state is Invalid.</exception>
+    /// <exception cref="UnreachableException">Thrown if the state is unknown.</exception>
     [SuppressMessage("ReSharper", "NullableWarningSuppressionIsUsed")]
     public Result<TOkOut> Map<TOkOut>(Func<TOk, TOkOut> map)
     {
@@ -97,6 +105,13 @@ public readonly struct Result<TOk> : IEquatable<Result<TOk>>
         };
     }
 
+    /// <summary>
+    ///     Map a <see cref="Result{TOk}" />.
+    /// </summary>
+    /// <param name="map">The mapping function.</param>
+    /// <returns>A <see cref="Result{TOk}" />.</returns>
+    /// <exception cref="InvalidOperationException">Thrown if state is Invalid.</exception>
+    /// <exception cref="UnreachableException">Thrown if the state is unknown.</exception>
     [SuppressMessage("ReSharper", "NullableWarningSuppressionIsUsed")]
     public Result<TOk> MapFailure(Func<Error, Error> map)
     {
