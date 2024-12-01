@@ -65,7 +65,7 @@ internal static class ResultTests
             _ = result.Bind(ok => new Result<int>(ok));
         });
     }
-    
+
     [Test]
     public static void BindFailure_Invalid_ThrowsInvalidOperationException()
     {
@@ -73,6 +73,16 @@ internal static class ResultTests
         {
             var result = new Result<int>();
             _ = result.BindFailure(error => new Result<int>(error));
+        });
+    }
+
+    [Test]
+    public static void Match_Invalid_ThrowsInvalidOperationException()
+    {
+        _ = Assert.Throws<InvalidOperationException>(() =>
+        {
+            var result = new Result<int>();
+            _ = result.Match(_ => 0, _ => 1);
         });
     }
 }

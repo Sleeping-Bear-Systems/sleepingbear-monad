@@ -3,6 +3,9 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace SleepingBear.Monad.Core;
 
+/// <summary>
+///     Result state enumeration.
+/// </summary>
 public enum ResultState
 {
     Invalid = 0,
@@ -13,7 +16,7 @@ public enum ResultState
 /// <summary>
 ///     Result monad.
 /// </summary>
-/// <typeparam name="TOk"></typeparam>
+/// <typeparam name="TOk">The OK type.</typeparam>
 public readonly struct Result<TOk> : IEquatable<Result<TOk>>
 {
     private readonly ResultState _state;
@@ -127,11 +130,11 @@ public readonly struct Result<TOk> : IEquatable<Result<TOk>>
     }
 
     /// <summary>
-    /// Binds a <see cref="Result{TOk}"/>.
+    ///     Binds a <see cref="Result{TOk}" />.
     /// </summary>
     /// <param name="bind">The binding function.</param>
     /// <typeparam name="TOkOut">The output OK type.</typeparam>
-    /// <returns>A <see cref="Result{TOk}"/>.</returns>
+    /// <returns>A <see cref="Result{TOk}" />.</returns>
     /// <exception cref="InvalidOperationException">Thrown if state is Invalid.</exception>
     /// <exception cref="UnreachableException">Thrown if the state is unknown.</exception>
     [SuppressMessage("ReSharper", "NullableWarningSuppressionIsUsed")]
@@ -147,7 +150,7 @@ public readonly struct Result<TOk> : IEquatable<Result<TOk>>
             _ => throw new UnreachableException()
         };
     }
-    
+
     /// <summary>
     ///     Bind a <see cref="Result{TOk}" />.
     /// </summary>
@@ -155,7 +158,6 @@ public readonly struct Result<TOk> : IEquatable<Result<TOk>>
     /// <returns>A <see cref="Result{TOk}" />.</returns>
     /// <exception cref="InvalidOperationException">Thrown if state is Invalid.</exception>
     /// <exception cref="UnreachableException">Thrown if the state is unknown.</exception>
-    /// <returns>A <see cref="Result{TOk}" />.</returns>
     [SuppressMessage("ReSharper", "NullableWarningSuppressionIsUsed")]
     public Result<TOk> BindFailure(Func<Error, Result<TOk>> bind)
     {
@@ -165,6 +167,30 @@ public readonly struct Result<TOk> : IEquatable<Result<TOk>>
         {
             ResultState.Ok => this,
             ResultState.Failure => bind(this._error!),
+            ResultState.Invalid => throw new InvalidOperationException(),
+            _ => throw new UnreachableException()
+        };
+    }
+
+    /// <summary>
+    ///     Matches the <see cref="Result{TOk}" />.
+    /// </summary>
+    /// <param name="ok">The OK function.</param>
+    /// <param name="error">The error function.</param>
+    /// <typeparam name="TOut">The output type.</typeparam>
+    /// <returns>The matched value.</returns>
+    /// <exception cref="InvalidOperationException">Thrown if state is Invalid.</exception>
+    /// <exception cref="UnreachableException">Thrown if the state is unknown.</exception>
+    [SuppressMessage("ReSharper", "NullableWarningSuppressionIsUsed")]
+    public TOut Match<TOut>(Func<TOk, TOut> ok, Func<Error, TOut> error)
+    {
+        ArgumentNullException.ThrowIfNull(ok);
+        ArgumentNullException.ThrowIfNull(error);
+
+        return this._state switch
+        {
+            ResultState.Ok => ok(this._ok!),
+            ResultState.Failure => error(this._error!),
             ResultState.Invalid => throw new InvalidOperationException(),
             _ => throw new UnreachableException()
         };
