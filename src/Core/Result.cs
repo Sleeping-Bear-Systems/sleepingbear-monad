@@ -267,9 +267,9 @@ public readonly struct Result<TOk> : IEquatable<Result<TOk>>
                 throw new UnreachableException();
         }
     }
-    
+
     /// <summary>
-    /// Taps a <see cref="Result{TOk}"/>.
+    ///     Taps a <see cref="Result{TOk}" />.
     /// </summary>
     /// <param name="okAction">The OK action.</param>
     /// <param name="errorAction">The error action.</param>

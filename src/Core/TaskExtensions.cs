@@ -166,7 +166,7 @@ public static class TaskExtensions
     }
 
     /// <summary>
-    /// Async version of the 'Tap' method of <see cref="Result{TOk}" />.
+    ///     Async version of the 'Tap' method of <see cref="Result{TOk}" />.
     /// </summary>
     /// <param name="task">The task.</param>
     /// <param name="okFunc">The 'OK' action.</param>
@@ -202,37 +202,5 @@ public static class TaskExtensions
         }
 
         return result;
-    }
-
-    /// <summary>
-    /// Async version of the tap method of <see cref="Maybe{TSome}" />.
-    /// </summary>
-    /// <param name="task">The task.</param>
-    /// <param name="someFunc">The 'Some' function.</param>
-    /// <param name="noneFunc">The 'None' function.</param>
-    /// <typeparam name="TSome">The 'Some' type.</typeparam>
-    /// <returns>The maybe.</returns>
-    [SuppressMessage("ReSharper", "NullableWarningSuppressionIsUsed")]
-    public static async Task<Maybe<TSome>> TapAsync<TSome>(
-        this Task<Maybe<TSome>> task,
-        Func<TSome, Task> someFunc,
-        Func<Task> noneFunc) where TSome : notnull
-    {
-        ArgumentNullException.ThrowIfNull(task);
-        ArgumentNullException.ThrowIfNull(someFunc);
-        ArgumentNullException.ThrowIfNull(noneFunc);
-        
-        var maybe = await task.ConfigureAwait(false);
-        var (isSome, some) = maybe;
-        if (isSome)
-        {
-            await someFunc(some!).ConfigureAwait(false);
-        }
-        else
-        {
-            await noneFunc().ConfigureAwait(false);
-        }
-
-        return maybe;
     }
 }

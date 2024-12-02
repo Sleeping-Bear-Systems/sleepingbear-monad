@@ -150,7 +150,7 @@ internal static class ResultTests
             Assert.Fail("Should not be called.");
         }
     }
-    
+
     [Test]
     [SuppressMessage("ReSharper", "NullableWarningSuppressionIsUsed")]
     public static void Tap_NullOkAction_ThrowsArgumentNullException()
