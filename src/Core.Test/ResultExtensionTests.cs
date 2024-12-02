@@ -8,9 +8,9 @@ namespace SleepingBear.Monad.Core.Test;
 internal static class ResultExtensionTests
 {
     [Test]
-    public static void ToOk_ValidatesBehavior()
+    public static void ToResult_OK_ValidatesBehavior()
     {
-        var result = 1234.ToOk();
+        var result = 1234.ToResult();
         result.Deconstruct(out var state, out var ok, out var error);
         Assert.Multiple(() =>
         {
@@ -21,10 +21,10 @@ internal static class ResultExtensionTests
     }
 
     [Test]
-    public static void ToError_ValidatesBehavior()
+    public static void ToResult_Error_ValidatesBehavior()
     {
         var error = new Error<int>(1234);
-        var result = error.ToError<string>();
+        var result = error.ToResult<string>();
         result.Deconstruct(out var state, out var ok, out var resultError);
         Assert.Multiple(() =>
         {
