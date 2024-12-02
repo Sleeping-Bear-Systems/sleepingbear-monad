@@ -22,7 +22,7 @@ public static class ResultExtensions
     /// <param name="error">The error value.</param>
     /// <typeparam name="TOk">The OK type.</typeparam>
     /// <returns>A <see cref="Result{TOk}" />.</returns>
-    public static Result<TOk> ToResultError<TOk>(this Error error) where TOk : notnull
+    public static Result<TOk> ToError<TOk>(this Error error) where TOk : notnull
     {
         return new Result<TOk>(error);
     }
