@@ -1,4 +1,6 @@
-﻿namespace SleepingBear.Monad.Core.Test;
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace SleepingBear.Monad.Core.Test;
 
 /// <summary>
 ///     Tests for <see cref="ResultExtensions" />.
@@ -29,6 +31,17 @@ internal static class ResultExtensionTests
             Assert.That(state, Is.EqualTo(ResultState.Error));
             Assert.That(ok, Is.Null);
             Assert.That(resultError, Is.EqualTo(error));
+        });
+    }
+
+    [Test]
+    [SuppressMessage("ReSharper", "NullableWarningSuppressionIsUsed")]
+    public static void Filter_NullPredicate_ThrowsArgumentNullException()
+    {
+        _ = Assert.Throws<ArgumentNullException>(() =>
+        {
+            _ = new Result<int>()
+                .Filter(null!, some => new Error<int>(some));
         });
     }
 }
