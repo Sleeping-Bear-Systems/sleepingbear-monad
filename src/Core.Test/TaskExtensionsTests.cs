@@ -25,7 +25,7 @@ internal static class TaskExtensionsTests
         {
             _ = await new Result<int>()
                 .ToTask()
-                .BindErrorAsync(error => error.ToResultError<int>().ToTask())
+                .BindErrorAsync(error => error.ToError<int>().ToTask())
                 .ConfigureAwait(false);
         });
         return Task.CompletedTask;

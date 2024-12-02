@@ -34,9 +34,16 @@ internal static class MaybeTests
     }
 
     [Test]
-    public static void None_ExpectIsNone()
+    public static void None_ReferenceType_ExpectIsNone()
     {
         var maybe = Maybe<string>.None;
+        Assert.That(maybe.IsNone, Is.True);
+    }
+
+    [Test]
+    public static void None_ValueType_ExpectIsNone()
+    {
+        var maybe = Maybe<int>.None;
         Assert.That(maybe.IsNone, Is.True);
     }
 
