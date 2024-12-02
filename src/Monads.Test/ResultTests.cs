@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using SleepingBear.Monad.Errors;
 
-namespace SleepingBear.Monad.Core.Test;
+namespace SleepingBear.Monad.Monads.Test;
 
 /// <summary>
 ///     Tests for <see cref="Result{TOk}" />.
@@ -38,16 +39,17 @@ internal static class ResultTests
     }
 
     [Test]
+    [SuppressMessage("ReSharper", "NullableWarningSuppressionIsUsed")]
     public static void Ctor_Error_ErrorState()
     {
-        var error = new Error<int>(1234);
+        var error = 1234.ToError();
         var result = new Result<int>(error);
         result.Deconstruct(out var state, out var ok, out var resultError);
         Assert.Multiple(() =>
         {
             Assert.That(state, Is.EqualTo(ResultState.Error));
             Assert.That(ok, Is.EqualTo(0));
-            Assert.That(resultError, Is.EqualTo(error));
+            Assert.That((Error<int>)resultError!, Is.EqualTo(error));
         });
     }
 
@@ -139,11 +141,11 @@ internal static class ResultTests
     [Test]
     public static void TryError_Error_ReturnsError()
     {
-        var error = new Error<int>(1234);
+        var error = 1234.ToError();
         var result = new Result<int>(error);
         if (result.TryError(out var resultError))
         {
-            Assert.That(resultError, Is.EqualTo(error));
+            Assert.That((Error<int>)resultError, Is.EqualTo(error));
         }
         else
         {

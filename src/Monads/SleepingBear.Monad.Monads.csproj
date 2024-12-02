@@ -5,10 +5,10 @@
     </PropertyGroup>
 
     <PropertyGroup>
-        <Description>Type abstractions and helper/extenions methods for functional programming.</Description>
+        <Description>Implementations of various monads.</Description>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <PackageIcon>icon.png</PackageIcon>
-        <PackageId>SleepingBear.Monad.Core</PackageId>
+        <PackageId>SleepingBear.Monad.Monads</PackageId>
         <PackageReadmeFile>README.md</PackageReadmeFile>
     </PropertyGroup>
 
@@ -29,6 +29,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\Core\SleepingBear.Monad.Core.csproj"/>
         <ProjectReference Include="..\Errors\SleepingBear.Monad.Errors.csproj"/>
     </ItemGroup>
 </Project>

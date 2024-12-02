@@ -1,4 +1,6 @@
-﻿namespace SleepingBear.Monad.Core;
+﻿using SleepingBear.Monad.Errors;
+
+namespace SleepingBear.Monad.Monads;
 
 /// <summary>
 ///     Extension methods for <see cref="Result{TOk}" />.

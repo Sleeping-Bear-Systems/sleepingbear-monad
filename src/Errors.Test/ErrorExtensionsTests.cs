@@ -1,7 +1,7 @@
-namespace SleepingBear.Monad.Core.Test;
+namespace SleepingBear.Monad.Errors.Test;
 
 /// <summary>
-/// Tests for <see cref="ErrorExtensions"/>.
+///     Tests for <see cref="ErrorExtensions" />.
 /// </summary>
 internal static class ErrorExtensionsTests
 {

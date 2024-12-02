@@ -1,7 +1,8 @@
 ﻿using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using SleepingBear.Monad.Errors;
 
-namespace SleepingBear.Monad.Core;
+namespace SleepingBear.Monad.Monads;
 
 /// <summary>
 ///     Extension methods for <see cref="Task{TResult}" />.

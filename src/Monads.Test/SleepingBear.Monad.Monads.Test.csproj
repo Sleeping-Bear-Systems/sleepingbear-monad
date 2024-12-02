@@ -21,8 +21,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Core\SleepingBear.Monad.Core.csproj"/>
-        <ProjectReference Include="..\Errors.Test\SleepingBear.Monad.Errors.Test.csproj"/>
+        <ProjectReference Include="..\Monads\SleepingBear.Monad.Monads.csproj"/>
     </ItemGroup>
 
 </Project>
