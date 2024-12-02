@@ -10,6 +10,15 @@ public readonly struct Maybe<TSome> : IEquatable<Maybe<TSome>> where TSome : not
 {
     private readonly TSome? _value;
 
+    /// <summary>
+    ///     Constructor.
+    /// </summary>
+    private Maybe(bool isSome, TSome value)
+    {
+        this.IsSome = isSome;
+        this._value = value;
+    }
+
     internal Maybe(TSome? value)
     {
         this.IsSome = value is not null;
@@ -19,7 +28,8 @@ public readonly struct Maybe<TSome> : IEquatable<Maybe<TSome>> where TSome : not
     /// <summary>
     ///     None instance.
     /// </summary>
-    public static readonly Maybe<TSome> None = new(default);
+    [SuppressMessage("ReSharper", "NullableWarningSuppressionIsUsed")]
+    public static readonly Maybe<TSome> None = new(false, default!);
 
     /// <summary>
     ///     Indicates the maybe is in the 'Some' state.

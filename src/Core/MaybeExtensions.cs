@@ -26,10 +26,10 @@ public static class MaybeExtensions
     /// <typeparam name="TSome">The 'Some' type.</typeparam>
     /// <returns>The maybe instance.</returns>
     [SuppressMessage("ReSharper", "NullableWarningSuppressionIsUsed")]
-    public static Maybe<TSome> Filter<TSome>(this Maybe<TSome> maybe, Func<TSome, bool> predicate) where TSome : notnull
+    public static Maybe<TSome> Where<TSome>(this Maybe<TSome> maybe, Func<TSome, bool> predicate) where TSome : notnull
     {
         ArgumentNullException.ThrowIfNull(predicate);
 
-        return maybe.Bind(some => predicate(some) ? new Maybe<TSome>(some) : Maybe<TSome>.None);
+        return maybe.Try(out var some) && predicate(some) ? maybe : Maybe<TSome>.None;
     }
 }

@@ -36,12 +36,12 @@ internal static class ResultExtensionTests
 
     [Test]
     [SuppressMessage("ReSharper", "NullableWarningSuppressionIsUsed")]
-    public static void Filter_NullPredicate_ThrowsArgumentNullException()
+    public static void Where_NullPredicate_ThrowsArgumentNullException()
     {
         _ = Assert.Throws<ArgumentNullException>(() =>
         {
             _ = new Result<int>()
-                .Filter(null!, some => new Error<int>(some));
+                .Where(null!, some => new Error<int>(some));
         });
     }
 }

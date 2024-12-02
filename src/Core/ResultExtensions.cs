@@ -35,7 +35,7 @@ public static class ResultExtensions
     /// <param name="errorFunc">The error function.</param>
     /// <typeparam name="TOk">The OK type.</typeparam>
     /// <returns>The result instance.</returns>
-    public static Result<TOk> Filter<TOk>(this Result<TOk> result, Func<TOk, bool> predicate,
+    public static Result<TOk> Where<TOk>(this Result<TOk> result, Func<TOk, bool> predicate,
         Func<TOk, Error> errorFunc) where TOk : notnull
     {
         ArgumentNullException.ThrowIfNull(predicate);
