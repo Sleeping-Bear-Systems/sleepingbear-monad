@@ -164,4 +164,43 @@ public static class TaskExtensions
             _ => throw new UnreachableException()
         };
     }
+
+    /// <summary>
+    ///     Async version of the 'Tap' method of <see cref="Result{TOk}" />.
+    /// </summary>
+    /// <param name="task">The task.</param>
+    /// <param name="okFunc">The 'OK' action.</param>
+    /// <param name="errorFunc">The 'Error' action.</param>
+    /// <typeparam name="TOk">The OK type.</typeparam>
+    /// <returns>A <see cref="Task{TResult}" />.</returns>
+    /// <exception cref="InvalidOperationException">Thrown if state is Invalid.</exception>
+    /// <exception cref="UnreachableException">Thrown if the state is unknown.</exception>
+    [SuppressMessage("ReSharper", "NullableWarningSuppressionIsUsed")]
+    public static async Task<Result<TOk>> TapAsync<TOk>(
+        this Task<Result<TOk>> task,
+        Func<TOk, Task> okFunc,
+        Func<Error, Task> errorFunc) where TOk : notnull
+    {
+        ArgumentNullException.ThrowIfNull(task);
+        ArgumentNullException.ThrowIfNull(okFunc);
+        ArgumentNullException.ThrowIfNull(errorFunc);
+
+        var result = await task.ConfigureAwait(false);
+        var (state, ok, error) = result;
+        switch (state)
+        {
+            case ResultState.Ok:
+                await okFunc(ok!).ConfigureAwait(false);
+                break;
+            case ResultState.Error:
+                await errorFunc(error!).ConfigureAwait(false);
+                break;
+            case ResultState.Invalid:
+                throw new InvalidOperationException();
+            default:
+                throw new UnreachableException();
+        }
+
+        return result;
+    }
 }

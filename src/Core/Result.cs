@@ -267,4 +267,35 @@ public readonly struct Result<TOk> : IEquatable<Result<TOk>>
                 throw new UnreachableException();
         }
     }
+
+    /// <summary>
+    ///     Taps a <see cref="Result{TOk}" />.
+    /// </summary>
+    /// <param name="okAction">The OK action.</param>
+    /// <param name="errorAction">The error action.</param>
+    /// <returns>The result</returns>
+    /// <exception cref="InvalidOperationException">Thrown if state is Invalid.</exception>
+    /// <exception cref="UnreachableException">Thrown if the state is unknown.</exception>
+    [SuppressMessage("ReSharper", "NullableWarningSuppressionIsUsed")]
+    public Result<TOk> Tap(Action<TOk> okAction, Action<Error> errorAction)
+    {
+        ArgumentNullException.ThrowIfNull(okAction);
+        ArgumentNullException.ThrowIfNull(errorAction);
+
+        switch (this._state)
+        {
+            case ResultState.Ok:
+                okAction(this._ok!);
+                break;
+            case ResultState.Error:
+                errorAction(this._error!);
+                break;
+            case ResultState.Invalid:
+                throw new InvalidOperationException();
+            default:
+                throw new UnreachableException();
+        }
+
+        return this;
+    }
 }
