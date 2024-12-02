@@ -12,7 +12,7 @@ internal static class TaskExtensionsTests
         {
             _ = await new Result<int>()
                 .ToTask()
-                .BindAsync(ok => ok.ToOk().ToTask())
+                .BindAsync(ok => ok.ToResult().ToTask())
                 .ConfigureAwait(false);
         });
         return Task.CompletedTask;
@@ -25,7 +25,7 @@ internal static class TaskExtensionsTests
         {
             _ = await new Result<int>()
                 .ToTask()
-                .BindErrorAsync(error => error.ToError<int>().ToTask())
+                .BindErrorAsync(error => error.ToResult<int>().ToTask())
                 .ConfigureAwait(false);
         });
         return Task.CompletedTask;
