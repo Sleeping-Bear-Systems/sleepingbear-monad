@@ -1,4 +1,4 @@
-﻿namespace SleepingBear.Monad.Core.Test;
+﻿namespace SleepingBear.Monad.Monads.Test;
 
 /// <summary>
 ///     Tests for <see cref="TaskExtensions" />.

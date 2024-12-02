@@ -5,10 +5,10 @@
     </PropertyGroup>
 
     <PropertyGroup>
-        <Description>Type abstractions and helper/extenions methods for functional programming.</Description>
+        <Description>An abstrat error record and various concrete derived error records.</Description>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <PackageIcon>icon.png</PackageIcon>
-        <PackageId>SleepingBear.Monad.Core</PackageId>
+        <PackageId>SleepingBear.Monad.Errors</PackageId>
         <PackageReadmeFile>README.md</PackageReadmeFile>
     </PropertyGroup>
 
@@ -28,7 +28,4 @@
         <InternalsVisibleTo Include="$(AssemblyName).Test"/>
     </ItemGroup>
 
-    <ItemGroup>
-        <ProjectReference Include="..\Errors\SleepingBear.Monad.Errors.csproj"/>
-    </ItemGroup>
 </Project>

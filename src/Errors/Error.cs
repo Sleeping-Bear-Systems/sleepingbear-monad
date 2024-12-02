@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
-namespace SleepingBear.Monad.Core;
+namespace SleepingBear.Monad.Errors;
 
 /// <summary>
 ///     Abstract error base class.

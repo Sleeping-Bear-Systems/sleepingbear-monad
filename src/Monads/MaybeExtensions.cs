@@ -1,6 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 
-namespace SleepingBear.Monad.Core;
+namespace SleepingBear.Monad.Monads;
 
 /// <summary>
 ///     Extension methods for <see cref="Maybe{TSome}" />.
