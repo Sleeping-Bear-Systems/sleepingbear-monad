@@ -1,4 +1,6 @@
-﻿namespace SleepingBear.Monad.Core.Test;
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace SleepingBear.Monad.Core.Test;
 
 /// <summary>
 ///     Tests for <see cref="Result{TOk}" />.
@@ -147,5 +149,16 @@ internal static class ResultTests
         {
             Assert.Fail("Should not be called.");
         }
+    }
+    
+    [Test]
+    [SuppressMessage("ReSharper", "NullableWarningSuppressionIsUsed")]
+    public static void Tap_NullOkAction_ThrowsArgumentNullException()
+    {
+        _ = Assert.Throws<ArgumentNullException>(() =>
+        {
+            var result = new Result<int>();
+            _ = result.Tap(null!, _ => { });
+        });
     }
 }
