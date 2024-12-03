@@ -50,4 +50,13 @@ internal static class ExceptionalTests
             Assert.That(outException, Is.SameAs(exception));
         });
     }
+
+    [Test]
+    public static void Map_Value_MapsToValue()
+    {
+        _ = new Exceptional<string>("value")
+            .Map(value => value.ToUpperInvariant())
+            .Tap(value => { Assert.That(value, Is.EqualTo("VALUE")); },
+                _ => { Assert.Fail("Should not be called."); });
+    }
 }

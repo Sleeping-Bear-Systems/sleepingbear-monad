@@ -1,3 +1,7 @@
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
+using SleepingBear.Monad.Core;
+
 namespace SleepingBear.Monad.Monads;
 
 /// <summary>
@@ -97,5 +101,86 @@ public readonly struct Exceptional<TValue> : IEquatable<Exceptional<TValue>> whe
     {
         return Equals(this._exception, other._exception) &&
                EqualityComparer<TValue?>.Default.Equals(this._value, other._value) && this._state == other._state;
+    }
+
+    /// <summary>
+    ///     Maps a <see cref="Exceptional{TValue}" />.
+    /// </summary>
+    /// <param name="map">The mapping function.</param>
+    /// <typeparam name="TValueOut">The output value type.</typeparam>
+    /// <returns>A <see cref="Exceptional{TValue}" />.</returns>
+    /// <exception cref="InvalidOperationException">Thrown if the state is invalid.</exception>
+    /// <exception cref="UnreachableException">Thrown if the state is unknown.</exception>
+    /// <remarks>
+    ///     The <c>FailFastIfCritical()</c> call prevents unrecoverable exceptions from being caught.
+    /// </remarks>
+    [SuppressMessage("Design", "CA1031:Do not catch general exception types")]
+    [SuppressMessage("ReSharper", "NullableWarningSuppressionIsUsed")]
+    public Exceptional<TValueOut> Map<TValueOut>(Func<TValue, TValueOut> map) where TValueOut : notnull
+    {
+        ArgumentNullException.ThrowIfNull(map);
+
+        switch (this._state)
+        {
+            case ExceptionalState.Value:
+            {
+                try
+                {
+                    return new Exceptional<TValueOut>(map(this._value!));
+                }
+                catch (Exception exception)
+                {
+                    exception.FailFastIfCritical("SleepingBear.Monad.Exceptional.Map");
+                    return new Exceptional<TValueOut>(exception);
+                }
+            }
+            case ExceptionalState.Exception:
+            {
+                return new Exceptional<TValueOut>(this._exception!);
+            }
+            case ExceptionalState.Invalid:
+                throw new InvalidOperationException();
+            default:
+                throw new UnreachableException();
+        }
+    }
+
+    /// <summary>
+    ///     Taps a <see cref="Exceptional{TValue}" />.
+    /// </summary>
+    /// <param name="valueAction">The 'Value' action.</param>
+    /// <param name="exceptionAction">The 'Exception' action.</param>
+    /// <returns>The <see cref="Exceptional{TValue}" /> instance.</returns>
+    /// <exception cref="InvalidOperationException">Thrown if the state is invalid.</exception>
+    /// <exception cref="UnreachableException">Thrown if the state is unknown.</exception>
+    /// <remarks>
+    ///     The <paramref name="valueAction" /> and <paramref name="exceptionAction" /> should NOT
+    ///     throw exceptions.
+    /// </remarks>
+    [SuppressMessage("ReSharper", "NullableWarningSuppressionIsUsed")]
+    public Exceptional<TValue> Tap(
+        Action<TValue> valueAction,
+        Action<Exception> exceptionAction)
+    {
+        ArgumentNullException.ThrowIfNull(valueAction);
+        ArgumentNullException.ThrowIfNull(exceptionAction);
+
+        switch (this._state)
+        {
+            case ExceptionalState.Value:
+            {
+                valueAction(this._value!);
+                return this;
+            }
+            case ExceptionalState.Exception:
+            {
+                exceptionAction(this._exception!);
+                return this;
+            }
+            case ExceptionalState.Invalid:
+                throw new InvalidOperationException();
+            default:
+                throw new UnreachableException();
+        }
     }
 }
