@@ -30,7 +30,7 @@ internal static class ExceptionalTests
             Assert.That(exceptional.IsValue, Is.False);
             Assert.That(exceptional.IsException, Is.False);
             Assert.That(state, Is.EqualTo(ExceptionalState.Invalid));
-            Assert.That(value, Is.EqualTo(default));
+            Assert.That(value, Is.EqualTo(default(int)));
             Assert.That(exception, Is.Null);
         });
     }
@@ -46,7 +46,7 @@ internal static class ExceptionalTests
             Assert.That(exceptional.IsValue, Is.False);
             Assert.That(exceptional.IsException, Is.True);
             Assert.That(state, Is.EqualTo(ExceptionalState.Exception));
-            Assert.That(value, Is.EqualTo(default));
+            Assert.That(value, Is.EqualTo(default(int)));
             Assert.That(outException, Is.SameAs(exception));
         });
     }
