@@ -206,4 +206,29 @@ public readonly struct Exceptional<TValue> : IEquatable<Exceptional<TValue>> whe
             _ => throw new UnreachableException()
         };
     }
+
+    /// <summary>
+    ///     Try to get the value from <see cref="Exceptional{TValue}" />.
+    /// </summary>
+    /// <param name="value">The value.</param>
+    /// <returns>True if state is 'Value', false otherwise.</returns>
+    /// <exception cref="InvalidOperationException">Thrown if the state is invalid.</exception>
+    /// <exception cref="UnreachableException">Thrown if the state is unknown.</exception>
+    [SuppressMessage("ReSharper", "NullableWarningSuppressionIsUsed")]
+    public bool Try([NotNullWhen(true)] out TValue? value)
+    {
+        switch (this._state)
+        {
+            case ExceptionalState.Invalid:
+                value = default;
+                return false;
+            case ExceptionalState.Value:
+                value = this._value!;
+                return true;
+            case ExceptionalState.Exception:
+                throw new InvalidOperationException();
+            default:
+                throw new UnreachableException();
+        }
+    }
 }

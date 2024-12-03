@@ -68,4 +68,18 @@ internal static class ExceptionalTests
             .Tap(value => { Assert.That(value, Is.EqualTo("VALUE")); },
                 _ => { Assert.Fail("Should not be called."); });
     }
+
+    [Test]
+    public static void Try_Value_ReturnsValue()
+    {
+        var exceptional = new Exceptional<int>(1234);
+        if (exceptional.Try(out var value))
+        {
+            Assert.That(value, Is.EqualTo(1234));
+        }
+        else
+        {
+            Assert.Fail("Should not be called.");
+        }
+    }
 }
