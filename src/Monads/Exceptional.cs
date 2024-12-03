@@ -231,4 +231,29 @@ public readonly struct Exceptional<TValue> : IEquatable<Exceptional<TValue>> whe
                 throw new UnreachableException();
         }
     }
+
+
+    /// <summary>
+    ///     Matches a <see cref="Exceptional{TValue}" />.
+    /// </summary>
+    /// <param name="valueFunc">The 'Value' function.</param>
+    /// <param name="exceptionFunc">The 'Exception' function.</param>
+    /// <typeparam name="TValueOut">The output value type.</typeparam>
+    /// <returns>The matched value.</returns>
+    /// <exception cref="InvalidOperationException">Thrown if the state is invalid.</exception>
+    /// <exception cref="UnreachableException">Thrown if the state is unknown.</exception>
+    [SuppressMessage("ReSharper", "NullableWarningSuppressionIsUsed")]
+    public TValueOut Match<TValueOut>(Func<TValue, TValueOut> valueFunc, Func<Exception, TValueOut> exceptionFunc)
+    {
+        ArgumentNullException.ThrowIfNull(valueFunc);
+        ArgumentNullException.ThrowIfNull(exceptionFunc);
+
+        return this._state switch
+        {
+            ExceptionalState.Value => valueFunc(this._value!),
+            ExceptionalState.Exception => exceptionFunc(this._exception!),
+            ExceptionalState.Invalid => throw new InvalidOperationException(),
+            _ => throw new UnreachableException()
+        };
+    }
 }

@@ -1,3 +1,5 @@
+using System.Globalization;
+
 namespace SleepingBear.Monad.Monads.Test;
 
 /// <summary>
@@ -81,5 +83,19 @@ internal static class ExceptionalTests
         {
             Assert.Fail("Should not be called.");
         }
+    }
+
+    [Test]
+    public static void Match_Value_ReturnsValue()
+    {
+        var exceptional = new Exceptional<int>(1234);
+        var result = exceptional.Match(
+            value => value.ToString(CultureInfo.InvariantCulture),
+            _ =>
+            {
+                Assert.Fail("Should not be called.");
+                return string.Empty;
+            });
+        Assert.That(result, Is.EqualTo("1234"));
     }
 }
