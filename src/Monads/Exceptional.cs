@@ -106,7 +106,7 @@ public readonly struct Exceptional<TValue> : IEquatable<Exceptional<TValue>> whe
     /// <summary>
     ///     Maps a <see cref="Exceptional{TValue}" />.
     /// </summary>
-    /// <param name="map">The mapping function.</param>
+    /// <param name="mapFunc">The mapping function.</param>
     /// <typeparam name="TValueOut">The output value type.</typeparam>
     /// <returns>A <see cref="Exceptional{TValue}" />.</returns>
     /// <exception cref="InvalidOperationException">Thrown if the state is invalid.</exception>
@@ -116,9 +116,9 @@ public readonly struct Exceptional<TValue> : IEquatable<Exceptional<TValue>> whe
     /// </remarks>
     [SuppressMessage("Design", "CA1031:Do not catch general exception types")]
     [SuppressMessage("ReSharper", "NullableWarningSuppressionIsUsed")]
-    public Exceptional<TValueOut> Map<TValueOut>(Func<TValue, TValueOut> map) where TValueOut : notnull
+    public Exceptional<TValueOut> Map<TValueOut>(Func<TValue, TValueOut> mapFunc) where TValueOut : notnull
     {
-        ArgumentNullException.ThrowIfNull(map);
+        ArgumentNullException.ThrowIfNull(mapFunc);
 
         switch (this._state)
         {
@@ -126,7 +126,7 @@ public readonly struct Exceptional<TValue> : IEquatable<Exceptional<TValue>> whe
             {
                 try
                 {
-                    return new Exceptional<TValueOut>(map(this._value!));
+                    return new Exceptional<TValueOut>(mapFunc(this._value!));
                 }
                 catch (Exception exception)
                 {
@@ -182,5 +182,28 @@ public readonly struct Exceptional<TValue> : IEquatable<Exceptional<TValue>> whe
             default:
                 throw new UnreachableException();
         }
+    }
+
+    /// <summary>
+    ///     Binds a <see cref="Exceptional{TValue}" />.
+    /// </summary>
+    /// <param name="bindFunc">The binding function.</param>
+    /// <typeparam name="TValueOut">The output value type.</typeparam>
+    /// <returns>A <see cref="Exceptional{TValue}" />.</returns>
+    /// <exception cref="InvalidOperationException">Thrown if the state is invalid.</exception>
+    /// <exception cref="UnreachableException">Thrown if the state is unknown.</exception>
+    [SuppressMessage("ReSharper", "NullableWarningSuppressionIsUsed")]
+    public Exceptional<TValueOut> Bind<TValueOut>(Func<TValue, Exceptional<TValueOut>> bindFunc)
+        where TValueOut : notnull
+    {
+        ArgumentNullException.ThrowIfNull(bindFunc);
+
+        return this._state switch
+        {
+            ExceptionalState.Value => bindFunc(this._value!),
+            ExceptionalState.Exception => new Exceptional<TValueOut>(this._exception!),
+            ExceptionalState.Invalid => throw new InvalidOperationException(),
+            _ => throw new UnreachableException()
+        };
     }
 }

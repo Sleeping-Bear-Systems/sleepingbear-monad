@@ -59,4 +59,13 @@ internal static class ExceptionalTests
             .Tap(value => { Assert.That(value, Is.EqualTo("VALUE")); },
                 _ => { Assert.Fail("Should not be called."); });
     }
+
+    [Test]
+    public static void Bind_Value_MapsToValue()
+    {
+        _ = new Exceptional<string>("value")
+            .Bind(value => new Exceptional<string>(value.ToUpperInvariant()))
+            .Tap(value => { Assert.That(value, Is.EqualTo("VALUE")); },
+                _ => { Assert.Fail("Should not be called."); });
+    }
 }
