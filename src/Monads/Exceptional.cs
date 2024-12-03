@@ -46,12 +46,12 @@ public readonly struct Exceptional<TValue> : IEquatable<Exceptional<TValue>> whe
     }
 
     /// <summary>
-    /// Property indicating the monad contains a value.
+    ///     Property indicating the monad contains a value.
     /// </summary>
     public bool IsValue => this._state == ExceptionalState.Value;
-    
+
     /// <summary>
-    /// Property indicating the monad contains an exception.
+    ///     Property indicating the monad contains an exception.
     /// </summary>
     public bool IsException => this._state == ExceptionalState.Exception;
 
