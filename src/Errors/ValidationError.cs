@@ -1,7 +1,7 @@
 namespace SleepingBear.Monad.Errors;
 
 /// <summary>
-///     Validation error.
+///     Concrete <see cref="Error" /> record for representing validation errors.
 /// </summary>
 /// <param name="Message">The error message.</param>
 /// <param name="Tag">The error tag.</param>
