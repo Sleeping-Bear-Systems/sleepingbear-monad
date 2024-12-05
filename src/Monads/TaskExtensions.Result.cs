@@ -26,7 +26,7 @@ public static partial class TaskExtensions
     {
         ArgumentNullException.ThrowIfNull(task);
         ArgumentNullException.ThrowIfNull(bindFunc);
-        
+
         var result = await task.ConfigureAwait(false);
         var (state, ok, error) = result;
         return state switch
@@ -55,7 +55,7 @@ public static partial class TaskExtensions
     {
         ArgumentNullException.ThrowIfNull(task);
         ArgumentNullException.ThrowIfNull(bindFunc);
-        
+
         var result = await task.ConfigureAwait(false);
         var (state, ok, error) = result;
         return state switch
@@ -66,7 +66,7 @@ public static partial class TaskExtensions
             _ => throw new UnreachableException()
         };
     }
-    
+
     /// <summary>
     ///     Async version of the bind error method of <see cref="Result{TOk}" />.
     /// </summary>
@@ -122,7 +122,7 @@ public static partial class TaskExtensions
             _ => throw new UnreachableException()
         };
     }
-    
+
     /// <summary>
     ///     Async version of the map method of <see cref="Result{TOk}" />.
     /// </summary>
@@ -180,7 +180,7 @@ public static partial class TaskExtensions
             _ => throw new UnreachableException()
         };
     }
-    
+
     /// <summary>
     ///     Async version of the map error method of <see cref="Result{TOk}" />.
     /// </summary>
@@ -209,7 +209,7 @@ public static partial class TaskExtensions
         };
     }
 
-    
+
     /// <summary>
     ///     Async version of the map error method of <see cref="Result{TOk}" />.
     /// </summary>
@@ -237,7 +237,7 @@ public static partial class TaskExtensions
             _ => throw new UnreachableException()
         };
     }
-    
+
     /// <summary>
     ///     Async version of the match method of <see cref="Result{TOk}" />.
     /// </summary>
@@ -301,7 +301,7 @@ public static partial class TaskExtensions
             _ => throw new UnreachableException()
         };
     }
-    
+
     /// <summary>
     ///     Async version of the 'Tap' method of <see cref="Result{TOk}" />.
     /// </summary>
