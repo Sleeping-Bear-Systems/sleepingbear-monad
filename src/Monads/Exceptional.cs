@@ -1,6 +1,5 @@
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using SleepingBear.Monad.Core;
 
 namespace SleepingBear.Monad.Monads;
 
@@ -112,37 +111,20 @@ public readonly struct Exceptional<TValue> : IEquatable<Exceptional<TValue>> whe
     /// <exception cref="InvalidOperationException">Thrown if the state is invalid.</exception>
     /// <exception cref="UnreachableException">Thrown if the state is unknown.</exception>
     /// <remarks>
-    ///     The <c>FailFastIfCritical()</c> call prevents unrecoverable exceptions from being caught.
+    ///     The <paramref name="mapFunc" /> should NOT throw any exceptions.
     /// </remarks>
-    [SuppressMessage("Design", "CA1031:Do not catch general exception types")]
     [SuppressMessage("ReSharper", "NullableWarningSuppressionIsUsed")]
     public Exceptional<TValueOut> Map<TValueOut>(Func<TValue, TValueOut> mapFunc) where TValueOut : notnull
     {
         ArgumentNullException.ThrowIfNull(mapFunc);
 
-        switch (this._state)
+        return this._state switch
         {
-            case ExceptionalState.Value:
-            {
-                try
-                {
-                    return new Exceptional<TValueOut>(mapFunc(this._value!));
-                }
-                catch (Exception exception)
-                {
-                    exception.FailFastIfCritical("SleepingBear.Monad.Exceptional.Map");
-                    return new Exceptional<TValueOut>(exception);
-                }
-            }
-            case ExceptionalState.Exception:
-            {
-                return new Exceptional<TValueOut>(this._exception!);
-            }
-            case ExceptionalState.Invalid:
-                throw new InvalidOperationException();
-            default:
-                throw new UnreachableException();
-        }
+            ExceptionalState.Value => new Exceptional<TValueOut>(mapFunc(this._value!)),
+            ExceptionalState.Exception => new Exceptional<TValueOut>(this._exception!),
+            ExceptionalState.Invalid => throw new InvalidOperationException(),
+            _ => throw new UnreachableException()
+        };
     }
 
     /// <summary>
@@ -155,7 +137,7 @@ public readonly struct Exceptional<TValue> : IEquatable<Exceptional<TValue>> whe
     /// <exception cref="UnreachableException">Thrown if the state is unknown.</exception>
     /// <remarks>
     ///     The <paramref name="valueAction" /> and <paramref name="exceptionAction" /> should NOT
-    ///     throw exceptions.
+    ///     throw any exceptions.
     /// </remarks>
     [SuppressMessage("ReSharper", "NullableWarningSuppressionIsUsed")]
     public Exceptional<TValue> Tap(
@@ -192,6 +174,9 @@ public readonly struct Exceptional<TValue> : IEquatable<Exceptional<TValue>> whe
     /// <returns>A <see cref="Exceptional{TValue}" />.</returns>
     /// <exception cref="InvalidOperationException">Thrown if the state is invalid.</exception>
     /// <exception cref="UnreachableException">Thrown if the state is unknown.</exception>
+    /// <remarks>
+    ///     The <paramref name="bindFunc" /> should NOT throw any exceptions.
+    /// </remarks>
     [SuppressMessage("ReSharper", "NullableWarningSuppressionIsUsed")]
     public Exceptional<TValueOut> Bind<TValueOut>(Func<TValue, Exceptional<TValueOut>> bindFunc)
         where TValueOut : notnull
