@@ -12,7 +12,7 @@ internal static class TaskExtensionsTests
     {
         var value = await 1234
             .ToTask()
-            .MapAsync(value => value.ToString(CultureInfo.InvariantCulture))
+            .Map(value => value.ToString(CultureInfo.InvariantCulture))
             .ConfigureAwait(true);
         Assert.That(value, Is.EqualTo("1234"));
     }
@@ -22,7 +22,7 @@ internal static class TaskExtensionsTests
     {
         var value = await 1234
             .ToTask()
-            .BindAsync(async value =>
+            .Bind(async value =>
             {
                 await Task.Delay(0).ConfigureAwait(false);
                 return value.ToString(CultureInfo.InvariantCulture);

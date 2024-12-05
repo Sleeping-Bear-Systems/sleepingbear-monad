@@ -24,7 +24,7 @@ public static class TaskExtensions
     /// <typeparam name="TValue">The type of the value wrapped in the <see cref="Task{TResult}" />.</typeparam>
     /// <typeparam name="TValueOut">The type of the value wrapped in the <see cref="Task{TResult}" /> being returned.</typeparam>
     /// <returns>A <see cref="Task{TResult}" /> containing the mapped value.</returns>
-    public static async Task<TValueOut> MapAsync<TValue, TValueOut>(this Task<TValue> task,
+    public static async Task<TValueOut> Map<TValue, TValueOut>(this Task<TValue> task,
         Func<TValue, TValueOut> mapFunc)
     {
         ArgumentNullException.ThrowIfNull(task);
@@ -42,7 +42,7 @@ public static class TaskExtensions
     /// <typeparam name="TValue">The type of the value wrapped in the <see cref="Task{TResult}" />.</typeparam>
     /// <typeparam name="TValueOut">The type of the value wrapped in the <see cref="Task{TResult}" /> being returned.</typeparam>
     /// <returns>A <see cref="Task{TResult}" /> containing the bound value.</returns>
-    public static async Task<TValueOut> BindAsync<TValue, TValueOut>(this Task<TValue> task,
+    public static async Task<TValueOut> Bind<TValue, TValueOut>(this Task<TValue> task,
         Func<TValue, Task<TValueOut>> bindFunc)
     {
         ArgumentNullException.ThrowIfNull(task);
