@@ -5,10 +5,10 @@
     </PropertyGroup>
 
     <PropertyGroup>
-        <Description>Implementations of various monads.</Description>
+        <Description>Extension and helper methods for System.Threading.Task.</Description>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <PackageIcon>icon.png</PackageIcon>
-        <PackageId>SleepingBear.Monad.Monads</PackageId>
+        <PackageId>SleepingBear.Monad.Tasks</PackageId>
         <PackageReadmeFile>README.md</PackageReadmeFile>
     </PropertyGroup>
 
@@ -30,7 +30,5 @@
 
     <ItemGroup>
         <ProjectReference Include="..\Core\SleepingBear.Monad.Core.csproj"/>
-        <ProjectReference Include="..\Errors\SleepingBear.Monad.Errors.csproj"/>
-        <ProjectReference Include="..\Tasks\SleepingBear.Monad.Tasks.csproj"/>
     </ItemGroup>
 </Project>
