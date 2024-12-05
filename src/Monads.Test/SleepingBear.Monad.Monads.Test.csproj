@@ -22,7 +22,6 @@
 
     <ItemGroup>
         <ProjectReference Include="..\Monads\SleepingBear.Monad.Monads.csproj"/>
-        <ProjectReference Include="..\Tasks\SleepingBear.Monad.Tasks.csproj"/>
     </ItemGroup>
 
 </Project>

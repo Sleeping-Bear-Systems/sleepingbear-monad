@@ -28,7 +28,4 @@
         <InternalsVisibleTo Include="$(AssemblyName).Test"/>
     </ItemGroup>
 
-    <ItemGroup>
-        <ProjectReference Include="..\Errors\SleepingBear.Monad.Errors.csproj"/>
-    </ItemGroup>
 </Project>

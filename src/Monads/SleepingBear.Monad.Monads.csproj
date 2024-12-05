@@ -31,5 +31,6 @@
     <ItemGroup>
         <ProjectReference Include="..\Core\SleepingBear.Monad.Core.csproj"/>
         <ProjectReference Include="..\Errors\SleepingBear.Monad.Errors.csproj"/>
+        <ProjectReference Include="..\Tasks\SleepingBear.Monad.Tasks.csproj" />
     </ItemGroup>
 </Project>

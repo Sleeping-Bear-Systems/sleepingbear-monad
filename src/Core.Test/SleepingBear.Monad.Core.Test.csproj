@@ -22,7 +22,6 @@
 
     <ItemGroup>
         <ProjectReference Include="..\Core\SleepingBear.Monad.Core.csproj"/>
-        <ProjectReference Include="..\Errors.Test\SleepingBear.Monad.Errors.Test.csproj"/>
     </ItemGroup>
 
 </Project>
