@@ -10,17 +10,6 @@ namespace SleepingBear.Monad.Monads;
 public static class TaskExtensions
 {
     /// <summary>
-    ///     Extension method to convert a value to a <see cref="Task{TResult}" />.
-    /// </summary>
-    /// <param name="result">The task value.</param>
-    /// <typeparam name="TResult">The value type.</typeparam>
-    /// <returns>A <see cref="Task{TResult}" />.</returns>
-    public static Task<TResult> ToTask<TResult>(this TResult result)
-    {
-        return Task.FromResult(result);
-    }
-
-    /// <summary>
     ///     Async version of the bind method of <see cref="Result{TOk}" />.
     /// </summary>
     /// <param name="task">The task.</param>
