@@ -6,7 +6,7 @@ namespace SleepingBear.Monad.Errors;
 public static class ValidationErrorExtensions
 {
     /// <summary>
-    ///     Create a <see cref="ValidationError" /> from a message.
+    ///     Creates a <see cref="ValidationError" /> from a message.
     /// </summary>
     /// <param name="message">The error message.</param>
     /// <param name="tag">The error tag. (optional)</param>
