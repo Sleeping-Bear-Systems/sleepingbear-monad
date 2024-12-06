@@ -7,3 +7,7 @@ This collection of class libraries providing monad implementations and error han
 ## SleepingBear.Monad.Monads
 
 ## SleepingBear.Monad.Errors
+
+## SleepingBear.Monad.Partials
+
+## Sleeping.Monad.Tasks
