@@ -174,7 +174,7 @@ internal static partial class TaskExtensionsTests
     }
 
     [Test]
-    public static async Task MatchAsync_SyncFuncs_ReturnMatchedValue()
+    public static async Task MatchAsync_SyncFunc_ReturnMatchedValue()
     {
         var matched = await 1234
             .ToResult()
@@ -185,7 +185,7 @@ internal static partial class TaskExtensionsTests
     }
 
     [Test]
-    public static async Task MatchAsync_AsyncFuncs_ReturnMatchedValue()
+    public static async Task MatchAsync_AsyncFunc_ReturnMatchedValue()
     {
         var matched = await 1234
             .ToResult()
