@@ -44,12 +44,12 @@ internal static class ResultTests
     {
         var error = 1234.ToError();
         var result = new Result<int>(error);
-        result.Deconstruct(out var state, out var ok, out var resultError);
+        result.Deconstruct(out var state, out var ok, out var outError);
         Assert.Multiple(() =>
         {
             Assert.That(state, Is.EqualTo(ResultState.Error));
             Assert.That(ok, Is.EqualTo(0));
-            Assert.That((Error<int>)resultError!, Is.EqualTo(error));
+            outError!.TestErrorOf<Error<int>>(e => { Assert.That(e.Value, Is.EqualTo(1234)); });
         });
     }
 
@@ -139,18 +139,14 @@ internal static class ResultTests
     }
 
     [Test]
+    [SuppressMessage("ReSharper", "NullableWarningSuppressionIsUsed")]
     public static void TryError_Error_ReturnsError()
     {
         var error = 1234.ToError();
         var result = new Result<int>(error);
-        if (result.TryError(out var resultError))
-        {
-            Assert.That((Error<int>)resultError, Is.EqualTo(error));
-        }
-        else
-        {
-            Assert.Fail("Should not be called.");
-        }
+        var isOk = result.TryError(out var resultError);
+        Assert.That(isOk, Is.True);
+        resultError!.TestErrorOf<Error<int>>(e => { Assert.That(e.Value, Is.EqualTo(1234)); });
     }
 
     [Test]

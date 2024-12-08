@@ -27,12 +27,12 @@ internal static class ResultExtensionTests
     {
         var error = 1234.ToError();
         var result = error.ToResult<string>();
-        result.Deconstruct(out var state, out var ok, out var resultError);
+        result.Deconstruct(out var state, out var ok, out var outError);
         Assert.Multiple(() =>
         {
             Assert.That(state, Is.EqualTo(ResultState.Error));
             Assert.That(ok, Is.Null);
-            Assert.That((Error<int>)resultError!, Is.EqualTo(error));
+            outError!.TestErrorOf<Error<int>>(e => { Assert.That(e.Value, Is.EqualTo(1234)); });
         });
     }
 

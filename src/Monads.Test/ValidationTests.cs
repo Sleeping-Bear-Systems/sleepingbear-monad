@@ -4,7 +4,7 @@ using SleepingBear.Monad.Errors;
 namespace SleepingBear.Monad.Monads.Test;
 
 /// <summary>
-/// Test for <see cref="Validation{TValue}"/>.
+///     Test for <see cref="Validation{TValue}" />.
 /// </summary>
 internal static class ValidationTests
 {

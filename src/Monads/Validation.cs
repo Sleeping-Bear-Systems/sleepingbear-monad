@@ -1,15 +1,16 @@
+using System.Collections.Immutable;
 using SleepingBear.Monad.Errors;
 
 namespace SleepingBear.Monad.Monads;
 
 /// <summary>
-/// Validation monad.
+///     Validation monad.
 /// </summary>
 public readonly struct Validation<TValue> : IEquatable<Validation<TValue>> where TValue : notnull
 {
     private readonly TValue? _value;
 
-    private readonly IEnumerable<Error>? _errors;
+    private readonly ImmutableList<Error>? _errors;
 
     internal Validation(TValue value)
     {
@@ -18,33 +19,33 @@ public readonly struct Validation<TValue> : IEquatable<Validation<TValue>> where
         this.IsValid = true;
     }
 
-    internal Validation(IEnumerable<Error>? errors)
+    internal Validation(ImmutableList<Error>? errors)
     {
         this._value = default;
-        this._errors = errors ?? [];
+        this._errors = errors ?? ImmutableList<Error>.Empty;
         this.IsValid = false;
     }
 
     /// <summary>
-    /// Default constructor.
+    ///     Default constructor.
     /// </summary>
     public Validation()
     {
         this._value = default;
-        this._errors = [];
+        this._errors = ImmutableList<Error>.Empty;
         this.IsValid = false;
     }
 
     /// <summary>
-    /// Is valid?
+    ///     Is valid?
     /// </summary>
     public bool IsValid { get; }
 
     /// <summary>
-    /// Is invalid?
+    ///     Is invalid?
     /// </summary>
     public bool IsInvalid => !this.IsValid;
-    
+
     /// <inheritdoc />
     public override bool Equals(object? obj)
     {
@@ -58,7 +59,7 @@ public readonly struct Validation<TValue> : IEquatable<Validation<TValue>> where
     }
 
     /// <summary>
-    /// Equality operator.
+    ///     Equality operator.
     /// </summary>
     public static bool operator ==(Validation<TValue> left, Validation<TValue> right)
     {
@@ -66,26 +67,28 @@ public readonly struct Validation<TValue> : IEquatable<Validation<TValue>> where
     }
 
     /// <summary>
-    /// Inequality operator.
+    ///     Inequality operator.
     /// </summary>
     public static bool operator !=(Validation<TValue> left, Validation<TValue> right)
     {
         return !(left == right);
     }
 
-    /// <inheritdoc cref="IEquatable{T}"/>.
+    /// <inheritdoc cref="IEquatable{T}" />
+    /// .
     public bool Equals(Validation<TValue> other)
     {
-        return EqualityComparer<TValue?>.Default.Equals(this._value, other._value) && Equals(this._errors, other._errors) && this.IsValid == other.IsValid;
+        return EqualityComparer<TValue?>.Default.Equals(this._value, other._value) &&
+               Equals(this._errors, other._errors) && this.IsValid == other.IsValid;
     }
-    
+
     /// <summary>
-    /// Deconstructs the validation monad.
+    ///     Deconstructs the validation monad.
     /// </summary>
     /// <param name="isValid">The is valid flag.</param>
     /// <param name="value">The value.</param>
     /// <param name="errors">The collection of errors.</param>
-    public void Deconstruct(out bool isValid, out TValue? value, out IEnumerable<Error>? errors)
+    public void Deconstruct(out bool isValid, out TValue? value, out ImmutableList<Error>? errors)
     {
         value = this._value;
         errors = this._errors;
