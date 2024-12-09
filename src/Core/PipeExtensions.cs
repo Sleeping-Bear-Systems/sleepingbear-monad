@@ -10,10 +10,10 @@ public static class PipeExtensions
     /// </summary>
     /// <param name="input">The input value.</param>
     /// <param name="pipeFunc">The pipe function.</param>
-    /// <typeparam name="TInput">The input type.</typeparam>
+    /// <typeparam name="T1">The input type.</typeparam>
     /// <typeparam name="TOutput">The output type.</typeparam>
     /// <returns>The output value.</returns>
-    public static TOutput Pipe<TInput, TOutput>(this TInput input, Func<TInput, TOutput> pipeFunc)
+    public static TOutput Pipe<T1, TOutput>(this T1 input, Func<T1, TOutput> pipeFunc)
     {
         ArgumentNullException.ThrowIfNull(pipeFunc);
         return pipeFunc(input);
@@ -24,12 +24,12 @@ public static class PipeExtensions
     /// </summary>
     /// <param name="task">The <see cref="Task" /> wrapping the input value.</param>
     /// <param name="pipeFunc">The pipe function.</param>
-    /// <typeparam name="TInput">The input value type.</typeparam>
+    /// <typeparam name="T1">The input value type.</typeparam>
     /// <typeparam name="TOutput">The output value type.</typeparam>
     /// <returns>A <see cref="Task{TResult}" /> wrapping the output value.</returns>
-    public static async Task<TOutput> PipeAsync<TInput, TOutput>(
-        this Task<TInput> task,
-        Func<TInput, TOutput> pipeFunc)
+    public static async Task<TOutput> PipeAsync<T1, TOutput>(
+        this Task<T1> task,
+        Func<T1, TOutput> pipeFunc)
     {
         ArgumentNullException.ThrowIfNull(task);
         ArgumentNullException.ThrowIfNull(pipeFunc);
@@ -43,12 +43,12 @@ public static class PipeExtensions
     /// </summary>
     /// <param name="task">The <see cref="Task" /> wrapping the input value.</param>
     /// <param name="pipeFunc">The pipe function.</param>
-    /// <typeparam name="TInput">The input value type.</typeparam>
+    /// <typeparam name="T1">The input value type.</typeparam>
     /// <typeparam name="TOutput">The output value type.</typeparam>
     /// <returns>A <see cref="Task{TResult}" /> wrapping the output value.</returns>
-    public static async Task<TOutput> PipeAsync<TInput, TOutput>(
-        this Task<TInput> task,
-        Func<TInput, Task<TOutput>> pipeFunc)
+    public static async Task<TOutput> PipeAsync<T1, TOutput>(
+        this Task<T1> task,
+        Func<T1, Task<TOutput>> pipeFunc)
     {
         ArgumentNullException.ThrowIfNull(task);
         ArgumentNullException.ThrowIfNull(pipeFunc);
