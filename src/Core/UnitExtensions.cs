@@ -1,16 +1,16 @@
 namespace SleepingBear.Monad.Core;
 
 /// <summary>
-///     Extensions methods of the <see cref="Void" /> class.
+///     Extensions methods of the <see cref="Unit" /> class.
 /// </summary>
-public static class VoidExtensions
+public static class UnitExtensions
 {
     /// <summary>
     ///     Converts an <see cref="Action" /> to a <inheritdoc cref="Func{TResult}" />.
     /// </summary>
     /// <param name="action">The action.</param>
     /// <returns>The function.</returns>
-    public static Func<Void> ToFunc(this Action action)
+    public static Func<Unit> ToFunc(this Action action)
     {
         ArgumentNullException.ThrowIfNull(action);
 
@@ -26,7 +26,7 @@ public static class VoidExtensions
     /// </summary>
     /// <param name="action">The action.</param>
     /// <returns>The function.</returns>
-    public static Func<T1, Void> ToFunc<T1>(this Action<T1> action)
+    public static Func<T1, Unit> ToFunc<T1>(this Action<T1> action)
     {
         ArgumentNullException.ThrowIfNull(action);
 
@@ -42,7 +42,7 @@ public static class VoidExtensions
     /// </summary>
     /// <param name="action">The action.</param>
     /// <returns>The function.</returns>
-    public static Func<T1, T2, Void> ToFunc<T1, T2>(this Action<T1, T2> action)
+    public static Func<T1, T2, Unit> ToFunc<T1, T2>(this Action<T1, T2> action)
     {
         ArgumentNullException.ThrowIfNull(action);
 
@@ -58,7 +58,7 @@ public static class VoidExtensions
     /// </summary>
     /// <param name="action">The action.</param>
     /// <returns>The function.</returns>
-    public static Func<T1, T2, T3, Void> ToFunc<T1, T2, T3>(this Action<T1, T2, T3> action)
+    public static Func<T1, T2, T3, Unit> ToFunc<T1, T2, T3>(this Action<T1, T2, T3> action)
     {
         ArgumentNullException.ThrowIfNull(action);
 
@@ -74,7 +74,7 @@ public static class VoidExtensions
     /// </summary>
     /// <param name="action">The action.</param>
     /// <returns>The function.</returns>
-    public static Func<T1, T2, T3, T4, Void> ToFunc<T1, T2, T3, T4>(this Action<T1, T2, T3, T4> action)
+    public static Func<T1, T2, T3, T4, Unit> ToFunc<T1, T2, T3, T4>(this Action<T1, T2, T3, T4> action)
     {
         ArgumentNullException.ThrowIfNull(action);
 
@@ -90,7 +90,7 @@ public static class VoidExtensions
     /// </summary>
     /// <param name="action">The action.</param>
     /// <returns>The function.</returns>
-    public static Func<T1, T2, T3, T4, T5, Void> ToFunc<T1, T2, T3, T4, T5>(this Action<T1, T2, T3, T4, T5> action)
+    public static Func<T1, T2, T3, T4, T5, Unit> ToFunc<T1, T2, T3, T4, T5>(this Action<T1, T2, T3, T4, T5> action)
     {
         ArgumentNullException.ThrowIfNull(action);
 
@@ -106,7 +106,7 @@ public static class VoidExtensions
     /// </summary>
     /// <param name="action">The action.</param>
     /// <returns>The function.</returns>
-    public static Func<T1, T2, T3, T4, T5, T6, Void> ToFunc<T1, T2, T3, T4, T5, T6>(
+    public static Func<T1, T2, T3, T4, T5, T6, Unit> ToFunc<T1, T2, T3, T4, T5, T6>(
         this Action<T1, T2, T3, T4, T5, T6> action)
     {
         ArgumentNullException.ThrowIfNull(action);

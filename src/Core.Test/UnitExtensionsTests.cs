@@ -1,9 +1,9 @@
 namespace SleepingBear.Monad.Core.Test;
 
 /// <summary>
-///     Tests for <see cref="VoidExtensions" />.
+///     Tests for <see cref="UnitExtensions" />.
 /// </summary>
-internal static class VoidExtensionsTests
+internal static class UnitExtensionsTests
 {
     [Test]
     public static void ToFunc_ZeroParameters_ValidatesBehavior()
