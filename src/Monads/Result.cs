@@ -29,12 +29,12 @@ public enum ResultState
 ///     Result monad.
 /// </summary>
 /// <typeparam name="TOk">The OK type.</typeparam>
-public readonly struct Result<TOk> : IEquatable<Result<TOk>>
+public readonly record struct Result<TOk>
     where TOk : notnull
 {
-    private readonly ResultState _state;
-    private readonly TOk? _ok;
     private readonly Error? _error;
+    private readonly TOk? _ok;
+    private readonly ResultState _state;
 
     internal Result(TOk ok)
     {
@@ -68,45 +68,7 @@ public readonly struct Result<TOk> : IEquatable<Result<TOk>>
     /// <param name="error">The error value.</param>
     public void Deconstruct(out ResultState state, out TOk? ok, out Error? error)
     {
-        state = this._state;
-        ok = this._ok;
-        error = this._error;
-    }
-
-    /// <inheritdoc cref="object" />
-    public override bool Equals(object? obj)
-    {
-        return obj is Result<TOk> other && this.Equals(other);
-    }
-
-    /// <inheritdoc cref="object" />
-    public override int GetHashCode()
-    {
-        return HashCode.Combine((int)this._state, this._ok, this._error);
-    }
-
-    /// <summary>
-    ///     Equality operator.
-    /// </summary>
-    public static bool operator ==(Result<TOk> left, Result<TOk> right)
-    {
-        return left.Equals(right);
-    }
-
-    /// <summary>
-    ///     Inequality operator.
-    /// </summary>
-    public static bool operator !=(Result<TOk> left, Result<TOk> right)
-    {
-        return !(left == right);
-    }
-
-    /// <inheritdoc cref="IEquatable{T}" />
-    public bool Equals(Result<TOk> other)
-    {
-        return this._state == other._state &&
-               EqualityComparer<TOk?>.Default.Equals(this._ok, other._ok) &&
-               Equals(this._error, other._error);
+        (state, ok, error) = (this._state, this._ok, this._error);
     }
 
     /// <summary>

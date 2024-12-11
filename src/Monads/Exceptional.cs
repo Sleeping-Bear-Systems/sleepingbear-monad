@@ -28,11 +28,11 @@ public enum ExceptionalState
 ///     Exceptional monad.
 /// </summary>
 /// <typeparam name="TValue">The value type.</typeparam>
-public readonly struct Exceptional<TValue> : IEquatable<Exceptional<TValue>> where TValue : notnull
+public readonly record struct Exceptional<TValue> where TValue : notnull
 {
     private readonly Exception? _exception;
-    private readonly TValue? _value;
     private readonly ExceptionalState _state;
+    private readonly TValue? _value;
 
     internal Exceptional(TValue value)
     {
@@ -66,40 +66,7 @@ public readonly struct Exceptional<TValue> : IEquatable<Exceptional<TValue>> whe
     /// <param name="exception">The exception.</param>
     public void Deconstruct(out ExceptionalState state, out TValue? value, out Exception? exception)
     {
-        state = this._state;
-        value = this._value;
-        exception = this._exception;
-    }
-
-    /// <inheritdoc cref="object" />
-    public override bool Equals(object? obj)
-    {
-        return obj is Exceptional<TValue> other && this.Equals(other);
-    }
-
-    /// <inheritdoc cref="object" />
-    public override int GetHashCode()
-    {
-        return HashCode.Combine(this._exception, this._value, (int)this._state);
-    }
-
-    /// <inheritdoc cref="object" />
-    public static bool operator ==(Exceptional<TValue> left, Exceptional<TValue> right)
-    {
-        return left.Equals(right);
-    }
-
-    /// <inheritdoc cref="object" />
-    public static bool operator !=(Exceptional<TValue> left, Exceptional<TValue> right)
-    {
-        return !(left == right);
-    }
-
-    /// <inheritdoc cref="object" />
-    public bool Equals(Exceptional<TValue> other)
-    {
-        return Equals(this._exception, other._exception) &&
-               EqualityComparer<TValue?>.Default.Equals(this._value, other._value) && this._state == other._state;
+        (state, value, exception) = (this._state, this._value, this._exception);
     }
 
     /// <summary>

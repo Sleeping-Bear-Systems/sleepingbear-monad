@@ -5,18 +5,23 @@ namespace SleepingBear.Monad.Monads;
 /// <summary>
 ///     Maybe monad.
 /// </summary>
-/// <typeparam name="TSome"></typeparam>
-public readonly struct Maybe<TSome> : IEquatable<Maybe<TSome>> where TSome : notnull
+/// <typeparam name="TSome">The type of the value being lifted.</typeparam>
+public readonly record struct Maybe<TSome> where TSome : notnull
 {
+    /// <summary>
+    ///     None instance.
+    /// </summary>
+    public static readonly Maybe<TSome> None = new();
+
     private readonly TSome? _value;
 
     /// <summary>
-    ///     Constructor.
+    ///     Default constructor.
     /// </summary>
-    private Maybe(bool isSome, TSome value)
+    public Maybe()
     {
-        this.IsSome = isSome;
-        this._value = value;
+        this.IsSome = false;
+        this._value = default;
     }
 
     internal Maybe(TSome? value)
@@ -26,60 +31,23 @@ public readonly struct Maybe<TSome> : IEquatable<Maybe<TSome>> where TSome : not
     }
 
     /// <summary>
-    ///     None instance.
-    /// </summary>
-    [SuppressMessage("ReSharper", "NullableWarningSuppressionIsUsed")]
-    public static readonly Maybe<TSome> None = new(false, default!);
-
-    /// <summary>
-    ///     Indicates the maybe is in the 'Some' state.
+    ///     Flag indicating a value has been lifted.
     /// </summary>
     public bool IsSome { get; }
 
     /// <summary>
-    ///     Indicates the maybe is in the 'None' state.
+    ///     Flag indicating no value has been lifted.
     /// </summary>
     public bool IsNone => !this.IsSome;
 
     /// <summary>
-    ///     Converts the maybe to a tuple.
+    ///     Deconstructs the monad.
     /// </summary>
     /// <param name="isSome">The isSome flag.</param>
-    /// <param name="value">The 'Some' value.</param>
+    /// <param name="value">The lifted value.</param>
     public void Deconstruct(out bool isSome, out TSome? value)
     {
-        isSome = this.IsSome;
-        value = this._value;
-    }
-
-    /// <inheritdoc cref="object" />
-    public override bool Equals(object? obj)
-    {
-        return obj is Maybe<TSome> other && this.Equals(other);
-    }
-
-    /// <inheritdoc cref="object" />
-    public override int GetHashCode()
-    {
-        return HashCode.Combine(this._value, this.IsSome);
-    }
-
-    /// <inheritdoc cref="object" />
-    public static bool operator ==(Maybe<TSome> left, Maybe<TSome> right)
-    {
-        return left.Equals(right);
-    }
-
-    /// <inheritdoc cref="object" />
-    public static bool operator !=(Maybe<TSome> left, Maybe<TSome> right)
-    {
-        return !(left == right);
-    }
-
-    /// <inheritdoc cref="object" />
-    public bool Equals(Maybe<TSome> other)
-    {
-        return EqualityComparer<TSome?>.Default.Equals(this._value, other._value) && this.IsSome == other.IsSome;
+        (isSome, value) = (this.IsSome, this._value);
     }
 
     /// <summary>
