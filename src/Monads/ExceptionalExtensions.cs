@@ -42,13 +42,9 @@ public static class ExceptionalExtensions
     [SuppressMessage("ReSharper", "NullableWarningSuppressionIsUsed")]
     public static Result<TValue> ToResult<TValue>(this Exceptional<TValue> exceptional) where TValue : notnull
     {
-        var (state, value, exception) = exceptional;
-        return state switch
-        {
-            ExceptionalState.Value => value!.ToResult(),
-            ExceptionalState.Exception => exception!.ToError().ToResult<TValue>(),
-            ExceptionalState.Invalid => throw new InvalidOperationException(),
-            _ => throw new UnreachableException()
-        };
+        var (isValue, value, exception) = exceptional;
+        return isValue
+            ? value!.ToResult()
+            : exception!.ToError().ToResult<TValue>();
     }
 }

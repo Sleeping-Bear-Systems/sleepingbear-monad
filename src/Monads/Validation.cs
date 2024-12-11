@@ -34,7 +34,7 @@ public readonly record struct Validation<TValue> where TValue : notnull
         this._errors = errors ?? ImmutableList<Error>.Empty;
         this.IsValid = false;
     }
-    
+
     /// <summary>
     ///     Is valid?
     /// </summary>

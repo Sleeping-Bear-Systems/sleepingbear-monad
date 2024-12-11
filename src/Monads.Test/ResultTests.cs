@@ -32,7 +32,7 @@ internal static class ResultTests
         {
             Assert.That(result.IsOk, Is.True);
             Assert.That(result.IsError, Is.False);
-            Assert.That(isOk, Is.EqualTo(true));
+            Assert.That(isOk, Is.True);
             Assert.That(ok, Is.EqualTo(1234));
             Assert.That(error, Is.Null);
         });
@@ -46,7 +46,7 @@ internal static class ResultTests
         var (isOk, ok, error) = result;
         Assert.Multiple(() =>
         {
-            Assert.That(isOk, Is.EqualTo(false));
+            Assert.That(isOk, Is.False);
             Assert.That(ok, Is.EqualTo(0));
             error!.TestErrorOf<Error<int>>(e => { Assert.That(e.Value, Is.EqualTo(1234)); });
         });
@@ -112,7 +112,7 @@ internal static class ResultTests
                     error.TestErrorOf<Error<int>>(intError => { Assert.That(intError.Value, Is.EqualTo(1234)); });
                 });
     }
-    
+
     [Test]
     public static void Bind_Ok_MapsValue()
     {
@@ -136,7 +136,7 @@ internal static class ResultTests
                     error.TestErrorOf<Error<int>>(intError => { Assert.That(intError.Value, Is.EqualTo(1234)); });
                 });
     }
-    
+
     [Test]
     public static void Match_Ok_MapsValue()
     {
@@ -147,5 +147,4 @@ internal static class ResultTests
                 _ => 0);
         Assert.That(result, Is.EqualTo(2468));
     }
-
 }

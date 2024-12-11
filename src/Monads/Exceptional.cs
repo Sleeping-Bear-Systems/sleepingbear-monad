@@ -4,69 +4,57 @@ using System.Diagnostics.CodeAnalysis;
 namespace SleepingBear.Monad.Monads;
 
 /// <summary>
-///     Exceptional monad state.
-/// </summary>
-public enum ExceptionalState
-{
-    /// <summary>
-    ///     Indicates that monad is invalid due to default construction.
-    /// </summary>
-    Invalid = 0,
-
-    /// <summary>
-    ///     Indicates the monad contains a value.
-    /// </summary>
-    Value,
-
-    /// <summary>
-    ///     Indicates the monad contains <see cref="Exception" />.
-    /// </summary>
-    Exception
-}
-
-/// <summary>
 ///     Exceptional monad.
 /// </summary>
 /// <typeparam name="TValue">The value type.</typeparam>
 public readonly record struct Exceptional<TValue> where TValue : notnull
 {
     private readonly Exception? _exception;
-    private readonly ExceptionalState _state;
     private readonly TValue? _value;
+
+    /// <summary>
+    ///     Default constructor.
+    /// </summary>
+    public Exceptional()
+    {
+        this.IsValue = false;
+        this._value = default;
+        this._exception = new InvalidOperationException("Exceptional<TValue> created using default constructor.");
+    }
 
     internal Exceptional(TValue value)
     {
+        this.IsValue = true;
         this._value = value;
         this._exception = null;
-        this._state = ExceptionalState.Value;
     }
 
     internal Exceptional(Exception exception)
     {
+        this.IsValue = false;
         this._value = default;
         this._exception = exception;
-        this._state = ExceptionalState.Exception;
     }
 
     /// <summary>
     ///     Property indicating the monad contains a value.
     /// </summary>
-    public bool IsValue => this._state == ExceptionalState.Value;
+    public bool IsValue { get; }
 
     /// <summary>
     ///     Property indicating the monad contains an exception.
     /// </summary>
-    public bool IsException => this._state == ExceptionalState.Exception;
+    public bool IsException => !this.IsValue;
 
     /// <summary>
     ///     Deconstructs the monad.
     /// </summary>
-    /// <param name="state">The state.</param>
+    /// <param name="isValue">The state.</param>
     /// <param name="value">The value.</param>
     /// <param name="exception">The exception.</param>
-    public void Deconstruct(out ExceptionalState state, out TValue? value, out Exception? exception)
+    public void Deconstruct(out bool isValue, out TValue? value, out Exception? exception)
     {
-        (state, value, exception) = (this._state, this._value, this._exception);
+        (isValue, value, exception) = (this.IsValue, this._value, this._exception);
     }
 
     /// <summary>
@@ -85,13 +73,9 @@ public readonly record struct Exceptional<TValue> where TValue : notnull
     {
         ArgumentNullException.ThrowIfNull(mapFunc);
 
-        return this._state switch
-        {
-            ExceptionalState.Value => new Exceptional<TValueOut>(mapFunc(this._value!)),
-            ExceptionalState.Exception => new Exceptional<TValueOut>(this._exception!),
-            ExceptionalState.Invalid => throw new InvalidOperationException(),
-            _ => throw new UnreachableException()
-        };
+        return this.IsValue
+            ? new Exceptional<TValueOut>(mapFunc(this._value!))
+            : new Exceptional<TValueOut>(this._exception!);
     }
 
     /// <summary>
@@ -114,23 +98,16 @@ public readonly record struct Exceptional<TValue> where TValue : notnull
         ArgumentNullException.ThrowIfNull(valueAction);
         ArgumentNullException.ThrowIfNull(exceptionAction);
 
-        switch (this._state)
+        if (this.IsValue)
         {
-            case ExceptionalState.Value:
-            {
-                valueAction(this._value!);
-                return this;
-            }
-            case ExceptionalState.Exception:
-            {
-                exceptionAction(this._exception!);
-                return this;
-            }
-            case ExceptionalState.Invalid:
-                throw new InvalidOperationException();
-            default:
-                throw new UnreachableException();
+            valueAction(this._value!);
         }
+        else
+        {
+            exceptionAction(this._exception!);
+        }
+
+        return this;
     }
 
     /// <summary>
@@ -150,13 +127,9 @@ public readonly record struct Exceptional<TValue> where TValue : notnull
     {
         ArgumentNullException.ThrowIfNull(bindFunc);
 
-        return this._state switch
-        {
-            ExceptionalState.Value => bindFunc(this._value!),
-            ExceptionalState.Exception => new Exceptional<TValueOut>(this._exception!),
-            ExceptionalState.Invalid => throw new InvalidOperationException(),
-            _ => throw new UnreachableException()
-        };
+        return this.IsValue
+            ? bindFunc(this._value!)
+            : new Exceptional<TValueOut>(this._exception!);
     }
 
     /// <summary>
@@ -169,19 +142,10 @@ public readonly record struct Exceptional<TValue> where TValue : notnull
     [SuppressMessage("ReSharper", "NullableWarningSuppressionIsUsed")]
     public bool Try([NotNullWhen(true)] out TValue? value)
     {
-        switch (this._state)
-        {
-            case ExceptionalState.Invalid:
-                value = default;
-                return false;
-            case ExceptionalState.Value:
-                value = this._value!;
-                return true;
-            case ExceptionalState.Exception:
-                throw new InvalidOperationException();
-            default:
-                throw new UnreachableException();
-        }
+        value = this.IsValue
+            ? this._value!
+            : default;
+        return this.IsValue;
     }
 
 
@@ -200,12 +164,8 @@ public readonly record struct Exceptional<TValue> where TValue : notnull
         ArgumentNullException.ThrowIfNull(valueFunc);
         ArgumentNullException.ThrowIfNull(exceptionFunc);
 
-        return this._state switch
-        {
-            ExceptionalState.Value => valueFunc(this._value!),
-            ExceptionalState.Exception => exceptionFunc(this._exception!),
-            ExceptionalState.Invalid => throw new InvalidOperationException(),
-            _ => throw new UnreachableException()
-        };
+        return this.IsValue
+            ? valueFunc(this._value!)
+            : exceptionFunc(this._exception!);
     }
 }

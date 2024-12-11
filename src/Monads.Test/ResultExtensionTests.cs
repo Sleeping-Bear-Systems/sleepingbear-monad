@@ -15,7 +15,7 @@ internal static class ResultExtensionTests
         var (isOk, ok, error) = result;
         Assert.Multiple(() =>
         {
-            Assert.That(isOk, Is.EqualTo(true));
+            Assert.That(isOk, Is.True);
             Assert.That(ok, Is.EqualTo(1234));
             Assert.That(error, Is.Null);
         });
@@ -29,7 +29,7 @@ internal static class ResultExtensionTests
         var (isOk, ok, error) = result;
         Assert.Multiple(() =>
         {
-            Assert.That(isOk, Is.EqualTo(false));
+            Assert.That(isOk, Is.False);
             Assert.That(ok, Is.Null);
             error!.TestErrorOf<Error<int>>(e => { Assert.That(e.Value, Is.EqualTo(1234)); });
         });
