@@ -37,8 +37,6 @@ public static class ExceptionalExtensions
     /// <param name="exceptional">The exceptional.</param>
     /// <typeparam name="TValue">The value type.</typeparam>
     /// <returns>A <see cref="Result{TOk}" />.</returns>
-    /// <exception cref="InvalidOperationException">Thrown if the state is invalid.</exception>
-    /// <exception cref="UnreachableException">Thrown if the state is unknown.</exception>
     [SuppressMessage("ReSharper", "NullableWarningSuppressionIsUsed")]
     public static Result<TValue> ToResult<TValue>(this Exceptional<TValue> exceptional) where TValue : notnull
     {

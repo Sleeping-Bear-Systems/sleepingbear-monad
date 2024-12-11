@@ -63,8 +63,6 @@ public readonly record struct Exceptional<TValue> where TValue : notnull
     /// <param name="mapFunc">The mapping function.</param>
     /// <typeparam name="TValueOut">The output value type.</typeparam>
     /// <returns>A <see cref="Exceptional{TValue}" />.</returns>
-    /// <exception cref="InvalidOperationException">Thrown if the state is invalid.</exception>
-    /// <exception cref="UnreachableException">Thrown if the state is unknown.</exception>
     /// <remarks>
     ///     The <paramref name="mapFunc" /> should NOT throw any exceptions.
     /// </remarks>
@@ -84,8 +82,6 @@ public readonly record struct Exceptional<TValue> where TValue : notnull
     /// <param name="valueAction">The 'Value' action.</param>
     /// <param name="exceptionAction">The 'Exception' action.</param>
     /// <returns>The <see cref="Exceptional{TValue}" /> instance.</returns>
-    /// <exception cref="InvalidOperationException">Thrown if the state is invalid.</exception>
-    /// <exception cref="UnreachableException">Thrown if the state is unknown.</exception>
     /// <remarks>
     ///     The <paramref name="valueAction" /> and <paramref name="exceptionAction" /> should NOT
     ///     throw any exceptions.
@@ -116,8 +112,6 @@ public readonly record struct Exceptional<TValue> where TValue : notnull
     /// <param name="bindFunc">The binding function.</param>
     /// <typeparam name="TValueOut">The output value type.</typeparam>
     /// <returns>A <see cref="Exceptional{TValue}" />.</returns>
-    /// <exception cref="InvalidOperationException">Thrown if the state is invalid.</exception>
-    /// <exception cref="UnreachableException">Thrown if the state is unknown.</exception>
     /// <remarks>
     ///     The <paramref name="bindFunc" /> should NOT throw any exceptions.
     /// </remarks>
@@ -137,8 +131,6 @@ public readonly record struct Exceptional<TValue> where TValue : notnull
     /// </summary>
     /// <param name="value">The value.</param>
     /// <returns>True if state is 'Value', false otherwise.</returns>
-    /// <exception cref="InvalidOperationException">Thrown if the state is invalid.</exception>
-    /// <exception cref="UnreachableException">Thrown if the state is unknown.</exception>
     [SuppressMessage("ReSharper", "NullableWarningSuppressionIsUsed")]
     public bool Try([NotNullWhen(true)] out TValue? value)
     {
@@ -156,8 +148,6 @@ public readonly record struct Exceptional<TValue> where TValue : notnull
     /// <param name="exceptionFunc">The 'Exception' function.</param>
     /// <typeparam name="TValueOut">The output value type.</typeparam>
     /// <returns>The matched value.</returns>
-    /// <exception cref="InvalidOperationException">Thrown if the state is invalid.</exception>
-    /// <exception cref="UnreachableException">Thrown if the state is unknown.</exception>
     [SuppressMessage("ReSharper", "NullableWarningSuppressionIsUsed")]
     public TValueOut Match<TValueOut>(Func<TValue, TValueOut> valueFunc, Func<Exception, TValueOut> exceptionFunc)
     {

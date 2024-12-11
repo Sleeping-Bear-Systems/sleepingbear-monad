@@ -65,8 +65,6 @@ public readonly record struct Result<TOk>
     /// <param name="mapFunc">The mapping function.</param>
     /// <typeparam name="TOkOut">The output OK type.</typeparam>
     /// <returns>A <see cref="Result{TOk}" />.</returns>
-    /// <exception cref="InvalidOperationException">Thrown if state is Invalid.</exception>
-    /// <exception cref="UnreachableException">Thrown if the state is unknown.</exception>
     [SuppressMessage("ReSharper", "NullableWarningSuppressionIsUsed")]
     public Result<TOkOut> Map<TOkOut>(Func<TOk, TOkOut> mapFunc) where TOkOut : notnull
     {
@@ -82,8 +80,6 @@ public readonly record struct Result<TOk>
     /// </summary>
     /// <param name="mapErrorFunc">The mapping function.</param>
     /// <returns>A <see cref="Result{TOk}" />.</returns>
-    /// <exception cref="InvalidOperationException">Thrown if state is Invalid.</exception>
-    /// <exception cref="UnreachableException">Thrown if the state is unknown.</exception>
     [SuppressMessage("ReSharper", "NullableWarningSuppressionIsUsed")]
     public Result<TOk> MapError(Func<Error, Error> mapErrorFunc)
     {
@@ -100,8 +96,6 @@ public readonly record struct Result<TOk>
     /// <param name="bindFunc">The binding function.</param>
     /// <typeparam name="TOkOut">The output OK type.</typeparam>
     /// <returns>A <see cref="Result{TOk}" />.</returns>
-    /// <exception cref="InvalidOperationException">Thrown if state is Invalid.</exception>
-    /// <exception cref="UnreachableException">Thrown if the state is unknown.</exception>
     [SuppressMessage("ReSharper", "NullableWarningSuppressionIsUsed")]
     public Result<TOkOut> Bind<TOkOut>(Func<TOk, Result<TOkOut>> bindFunc) where TOkOut : notnull
     {
@@ -117,8 +111,6 @@ public readonly record struct Result<TOk>
     /// </summary>
     /// <param name="bindFunc">The binding function.</param>
     /// <returns>A <see cref="Result{TOk}" />.</returns>
-    /// <exception cref="InvalidOperationException">Thrown if state is Invalid.</exception>
-    /// <exception cref="UnreachableException">Thrown if the state is unknown.</exception>
     [SuppressMessage("ReSharper", "NullableWarningSuppressionIsUsed")]
     public Result<TOk> BindError(Func<Error, Result<TOk>> bindFunc)
     {
@@ -136,8 +128,6 @@ public readonly record struct Result<TOk>
     /// <param name="errorFunc">The error function.</param>
     /// <typeparam name="TOut">The output type.</typeparam>
     /// <returns>The matched value.</returns>
-    /// <exception cref="InvalidOperationException">Thrown if state is Invalid.</exception>
-    /// <exception cref="UnreachableException">Thrown if the state is unknown.</exception>
     [SuppressMessage("ReSharper", "NullableWarningSuppressionIsUsed")]
     public TOut Match<TOut>(Func<TOk, TOut> okFunc, Func<Error, TOut> errorFunc)
     {
@@ -154,8 +144,6 @@ public readonly record struct Result<TOk>
     /// </summary>
     /// <param name="ok">The 'OK' value.</param>
     /// <returns>True if OK, false otherwise.</returns>
-    /// <exception cref="InvalidOperationException">Thrown if state is Invalid.</exception>
-    /// <exception cref="UnreachableException">Thrown if the state is unknown.</exception>
     [SuppressMessage("ReSharper", "NullableWarningSuppressionIsUsed")]
     public bool Try([NotNullWhen(true)] out TOk? ok)
     {
@@ -170,8 +158,6 @@ public readonly record struct Result<TOk>
     /// </summary>
     /// <param name="error">The 'Error' value.</param>
     /// <returns>True if error, false otherwise.</returns>
-    /// <exception cref="InvalidOperationException">Thrown if state is Invalid.</exception>
-    /// <exception cref="UnreachableException">Thrown if the state is unknown.</exception>
     [SuppressMessage("ReSharper", "NullableWarningSuppressionIsUsed")]
     public bool TryError([NotNullWhen(true)] out Error? error)
     {
@@ -185,8 +171,6 @@ public readonly record struct Result<TOk>
     /// <param name="okAction">The OK action.</param>
     /// <param name="errorAction">The error action.</param>
     /// <returns>The result</returns>
-    /// <exception cref="InvalidOperationException">Thrown if state is Invalid.</exception>
-    /// <exception cref="UnreachableException">Thrown if the state is unknown.</exception>
     [SuppressMessage("ReSharper", "NullableWarningSuppressionIsUsed")]
     public Result<TOk> Tap(Action<TOk> okAction, Action<Error> errorAction)
     {

@@ -17,8 +17,6 @@ public static partial class TaskExtensions
     /// <typeparam name="TOk">The OK type.</typeparam>
     /// <typeparam name="TOkOut">The output OK type.</typeparam>
     /// <returns>A <see cref="Task{TResult}" />.</returns>
-    /// <exception cref="InvalidOperationException">Thrown if state is Invalid.</exception>
-    /// <exception cref="UnreachableException">Thrown if the state is unknown.</exception>
     [SuppressMessage("ReSharper", "NullableWarningSuppressionIsUsed")]
     public static async Task<Result<TOkOut>> BindAsync<TOk, TOkOut>(
         this Task<Result<TOk>> task,
@@ -43,8 +41,6 @@ public static partial class TaskExtensions
     /// <typeparam name="TOk">The OK type.</typeparam>
     /// <typeparam name="TOkOut">The output OK type.</typeparam>
     /// <returns>A <see cref="Task{TResult}" />.</returns>
-    /// <exception cref="InvalidOperationException">Thrown if state is Invalid.</exception>
-    /// <exception cref="UnreachableException">Thrown if the state is unknown.</exception>
     [SuppressMessage("ReSharper", "NullableWarningSuppressionIsUsed")]
     public static async Task<Result<TOkOut>> BindAsync<TOk, TOkOut>(
         this Task<Result<TOk>> task,
@@ -68,8 +64,6 @@ public static partial class TaskExtensions
     /// <param name="bindFunc">The binding function.</param>
     /// <typeparam name="TOk">The OK type.</typeparam>
     /// <returns>A <see cref="Task{TResult}" />.</returns>
-    /// <exception cref="InvalidOperationException">Thrown if state is Invalid.</exception>
-    /// <exception cref="UnreachableException">Thrown if the state is unknown.</exception>
     [SuppressMessage("ReSharper", "NullableWarningSuppressionIsUsed")]
     public static async Task<Result<TOk>> BindErrorAsync<TOk>(
         this Task<Result<TOk>> task,
@@ -91,8 +85,6 @@ public static partial class TaskExtensions
     /// <param name="bindFunc">The binding function.</param>
     /// <typeparam name="TOk">The OK type.</typeparam>
     /// <returns>A <see cref="Task{TResult}" />.</returns>
-    /// <exception cref="InvalidOperationException">Thrown if state is Invalid.</exception>
-    /// <exception cref="UnreachableException">Thrown if the state is unknown.</exception>
     [SuppressMessage("ReSharper", "NullableWarningSuppressionIsUsed")]
     public static async Task<Result<TOk>> BindErrorAsync<TOk>(
         this Task<Result<TOk>> task,
@@ -115,8 +107,6 @@ public static partial class TaskExtensions
     /// <typeparam name="TOk">The OK type.</typeparam>
     /// <typeparam name="TOkOut">The output OK type.</typeparam>
     /// <returns>A <see cref="Task{TResult}" />.</returns>
-    /// <exception cref="InvalidOperationException">Thrown if state is Invalid.</exception>
-    /// <exception cref="UnreachableException">Thrown if the state is unknown.</exception>
     [SuppressMessage("ReSharper", "NullableWarningSuppressionIsUsed")]
     public static async Task<Result<TOkOut>> MapAsync<TOk, TOkOut>(
         this Task<Result<TOk>> task,
@@ -139,8 +129,6 @@ public static partial class TaskExtensions
     /// <typeparam name="TOk">The OK type.</typeparam>
     /// <typeparam name="TOkOut">The output OK type.</typeparam>
     /// <returns>A <see cref="Task{TResult}" />.</returns>
-    /// <exception cref="InvalidOperationException">Thrown if state is Invalid.</exception>
-    /// <exception cref="UnreachableException">Thrown if the state is unknown.</exception>
     [SuppressMessage("ReSharper", "NullableWarningSuppressionIsUsed")]
     public static async Task<Result<TOkOut>> MapAsync<TOk, TOkOut>(
         this Task<Result<TOk>> task,
@@ -162,8 +150,6 @@ public static partial class TaskExtensions
     /// <param name="mapErrorFunc">The mapping function.</param>
     /// <typeparam name="TOk">The OK type.</typeparam>
     /// <returns>A <see cref="Task{TResult}" />.</returns>
-    /// <exception cref="InvalidOperationException">Thrown if state is Invalid.</exception>
-    /// <exception cref="UnreachableException">Thrown if the state is unknown.</exception>
     [SuppressMessage("ReSharper", "NullableWarningSuppressionIsUsed")]
     public static async Task<Result<TOk>> MapErrorAsync<TOk>(
         this Task<Result<TOk>> task,
@@ -186,8 +172,6 @@ public static partial class TaskExtensions
     /// <param name="mapErrorFunc">The mapping function.</param>
     /// <typeparam name="TOk">The OK type.</typeparam>
     /// <returns>A <see cref="Task{TResult}" />.</returns>
-    /// <exception cref="InvalidOperationException">Thrown if state is Invalid.</exception>
-    /// <exception cref="UnreachableException">Thrown if the state is unknown.</exception>
     [SuppressMessage("ReSharper", "NullableWarningSuppressionIsUsed")]
     public static async Task<Result<TOk>> MapErrorAsync<TOk>(
         this Task<Result<TOk>> task,
@@ -211,8 +195,6 @@ public static partial class TaskExtensions
     /// <typeparam name="TOk">The OK type.</typeparam>
     /// <typeparam name="TOut">The output type.</typeparam>
     /// <returns>A <see cref="Task{TResult}" />.</returns>
-    /// <exception cref="InvalidOperationException">Thrown if state is Invalid.</exception>
-    /// <exception cref="UnreachableException">Thrown if the state is unknown.</exception>
     [SuppressMessage("ReSharper", "NullableWarningSuppressionIsUsed")]
     public static async Task<TOut> MatchAsync<TOk, TOut>(
         this Task<Result<TOk>> task,
@@ -238,8 +220,6 @@ public static partial class TaskExtensions
     /// <typeparam name="TOk">The OK type.</typeparam>
     /// <typeparam name="TOut">The output type.</typeparam>
     /// <returns>A <see cref="Task{TResult}" />.</returns>
-    /// <exception cref="InvalidOperationException">Thrown if state is Invalid.</exception>
-    /// <exception cref="UnreachableException">Thrown if the state is unknown.</exception>
     [SuppressMessage("ReSharper", "NullableWarningSuppressionIsUsed")]
     public static async Task<TOut> MatchAsync<TOk, TOut>(
         this Task<Result<TOk>> task,
@@ -264,8 +244,6 @@ public static partial class TaskExtensions
     /// <param name="errorFunc">The 'Error' action.</param>
     /// <typeparam name="TOk">The OK type.</typeparam>
     /// <returns>A <see cref="Task{TResult}" />.</returns>
-    /// <exception cref="InvalidOperationException">Thrown if state is Invalid.</exception>
-    /// <exception cref="UnreachableException">Thrown if the state is unknown.</exception>
     [SuppressMessage("ReSharper", "NullableWarningSuppressionIsUsed")]
     public static async Task<Result<TOk>> TapAsync<TOk>(
         this Task<Result<TOk>> task,
@@ -297,8 +275,6 @@ public static partial class TaskExtensions
     /// <param name="errorAction">The 'Error' action.</param>
     /// <typeparam name="TOk">The OK type.</typeparam>
     /// <returns>A <see cref="Task{TResult}" />.</returns>
-    /// <exception cref="InvalidOperationException">Thrown if state is Invalid.</exception>
-    /// <exception cref="UnreachableException">Thrown if the state is unknown.</exception>
     [SuppressMessage("ReSharper", "NullableWarningSuppressionIsUsed")]
     public static async Task<Result<TOk>> TapAsync<TOk>(
         this Task<Result<TOk>> task,

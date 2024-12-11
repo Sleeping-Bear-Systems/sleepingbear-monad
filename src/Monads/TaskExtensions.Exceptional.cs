@@ -16,8 +16,6 @@ public static partial class TaskExtensions
     /// <typeparam name="TValue">The value type.</typeparam>
     /// <typeparam name="TValueOut">The output value type.</typeparam>
     /// <returns>A <see cref="Task{TResult}" />.</returns>
-    /// <exception cref="InvalidOperationException">Thrown if state is Invalid.</exception>
-    /// <exception cref="UnreachableException">Thrown if the state is unknown.</exception>
     [SuppressMessage("ReSharper", "NullableWarningSuppressionIsUsed")]
     public static async Task<Exceptional<TValueOut>> MapAsync<TValue, TValueOut>(
         this Task<Exceptional<TValue>> task,
@@ -40,8 +38,6 @@ public static partial class TaskExtensions
     /// <typeparam name="TValue">The value type.</typeparam>
     /// <typeparam name="TValueOut">The output value type.</typeparam>
     /// <returns>A <see cref="Task{TResult}" />.</returns>
-    /// <exception cref="InvalidOperationException">Thrown if state is Invalid.</exception>
-    /// <exception cref="UnreachableException">Thrown if the state is unknown.</exception>
     [SuppressMessage("ReSharper", "NullableWarningSuppressionIsUsed")]
     public static async Task<Exceptional<TValueOut>> BindAsync<TValue, TValueOut>(
         this Task<Exceptional<TValue>> task,
@@ -64,8 +60,6 @@ public static partial class TaskExtensions
     /// <param name="exceptionAction">The 'Exception' action.</param>
     /// <typeparam name="TValue">The value type.</typeparam>
     /// <returns>A <see cref="Task{TResult}" />.</returns>
-    /// <exception cref="InvalidOperationException">Thrown if state is Invalid.</exception>
-    /// <exception cref="UnreachableException">Thrown if the state is unknown.</exception>
     [SuppressMessage("ReSharper", "NullableWarningSuppressionIsUsed")]
     public static async Task<Exceptional<TValue>> TapAsync<TValue>(
         this Task<Exceptional<TValue>> task,
@@ -98,8 +92,6 @@ public static partial class TaskExtensions
     /// <typeparam name="TValue">The 'Value' type.</typeparam>
     /// <typeparam name="TValueOut">The output 'Value' type.</typeparam>
     /// <returns>A <see cref="Task{TResult}" />.</returns>
-    /// <exception cref="InvalidOperationException">Thrown if state is Invalid.</exception>
-    /// <exception cref="UnreachableException">Thrown if the state is unknown.</exception>
     [SuppressMessage("ReSharper", "NullableWarningSuppressionIsUsed")]
     public static async Task<TValueOut> MatchAsync<TValue, TValueOut>(
         this Task<Exceptional<TValue>> task,

@@ -60,9 +60,7 @@ public static class ResultExtensions
     /// <param name="predicate">The predicate.</param>
     /// <param name="bindFunc">The binding function.</param>
     /// <typeparam name="TOk">The input OK type.</typeparam>
-    /// <returns>A <see cref="Result{TOk}" /> containing the bound value..</returns>
-    /// <exception cref="InvalidOperationException">Thrown if the result's state is invalid.</exception>
-    /// <exception cref="UnreachableException">Thrown if the result's state is unknown.</exception>
+    /// <returns>A <see cref="Result{TOk}" /> containing the bound value.</returns>
     [SuppressMessage("ReSharper", "NullableWarningSuppressionIsUsed")]
     public static Result<TOk> BindIf<TOk>(
         this Result<TOk> result,
@@ -87,8 +85,6 @@ public static class ResultExtensions
     /// <param name="mapFunc">The mapping function.</param>
     /// <typeparam name="TOk">The lifted value type.</typeparam>
     /// <returns>A <see cref="Result{TOk}" /> containing the mapped value.</returns>
-    /// <exception cref="InvalidOperationException">Thrown if the result's state is invalid.</exception>
-    /// <exception cref="UnreachableException">Thrown if the result's state is unknown.</exception>
     [SuppressMessage("ReSharper", "NullableWarningSuppressionIsUsed")]
     public static Result<TOk> MapIf<TOk>(
         this Result<TOk> result,
