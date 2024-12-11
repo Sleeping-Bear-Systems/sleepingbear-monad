@@ -9,17 +9,17 @@ namespace SleepingBear.Monad.Monads.Test;
 internal static class ResultTests
 {
     [Test]
-    public static void Ctor_Default_InvalidState()
+    public static void Ctor_Default_UnknownError()
     {
         var result = new Result<int>();
-        result.Deconstruct(out var state, out var ok, out var error);
+        var (isOk, ok, error) = result;
         Assert.Multiple(() =>
         {
             Assert.That(result.IsOk, Is.False);
-            Assert.That(result.IsError, Is.False);
-            Assert.That(state, Is.EqualTo(ResultState.Invalid));
+            Assert.That(result.IsError, Is.True);
+            Assert.That(isOk, Is.False);
             Assert.That(ok, Is.EqualTo(0));
-            Assert.That(error, Is.Null);
+            Assert.That(error, Is.InstanceOf<UnknownError>());
         });
     }
 
@@ -27,12 +27,12 @@ internal static class ResultTests
     public static void Ctor_Ok_OkState()
     {
         var result = new Result<int>(1234);
-        result.Deconstruct(out var state, out var ok, out var error);
+        var (isOk, ok, error) = result;
         Assert.Multiple(() =>
         {
             Assert.That(result.IsOk, Is.True);
             Assert.That(result.IsError, Is.False);
-            Assert.That(state, Is.EqualTo(ResultState.Ok));
+            Assert.That(isOk, Is.EqualTo(true));
             Assert.That(ok, Is.EqualTo(1234));
             Assert.That(error, Is.Null);
         });
@@ -42,74 +42,13 @@ internal static class ResultTests
     [SuppressMessage("ReSharper", "NullableWarningSuppressionIsUsed")]
     public static void Ctor_Error_ErrorState()
     {
-        var error = 1234.ToError();
-        var result = new Result<int>(error);
-        result.Deconstruct(out var state, out var ok, out var outError);
+        var result = new Result<int>(1234.ToError());
+        var (isOk, ok, error) = result;
         Assert.Multiple(() =>
         {
-            Assert.That(state, Is.EqualTo(ResultState.Error));
+            Assert.That(isOk, Is.EqualTo(false));
             Assert.That(ok, Is.EqualTo(0));
-            outError!.TestErrorOf<Error<int>>(e => { Assert.That(e.Value, Is.EqualTo(1234)); });
-        });
-    }
-
-    [Test]
-    public static void Map_Invalid_ThrowsInvalidOperationException()
-    {
-        _ = Assert.Throws<InvalidOperationException>(() =>
-        {
-            var result = new Result<int>();
-            _ = result.Map(ok => ok);
-        });
-    }
-
-    [Test]
-    public static void MapError_Invalid_ThrowsInvalidOperationException()
-    {
-        _ = Assert.Throws<InvalidOperationException>(() =>
-        {
-            var result = new Result<int>();
-            _ = result.MapError(error => error);
-        });
-    }
-
-    [Test]
-    public static void Bind_Invalid_ThrowsInvalidOperationException()
-    {
-        _ = Assert.Throws<InvalidOperationException>(() =>
-        {
-            var result = new Result<int>();
-            _ = result.Bind(ok => new Result<int>(ok));
-        });
-    }
-
-    [Test]
-    public static void BindError_Invalid_ThrowsInvalidOperationException()
-    {
-        _ = Assert.Throws<InvalidOperationException>(() =>
-        {
-            var result = new Result<int>();
-            _ = result.BindError(error => new Result<int>(error));
-        });
-    }
-
-    [Test]
-    public static void Match_Invalid_ThrowsInvalidOperationException()
-    {
-        _ = Assert.Throws<InvalidOperationException>(() =>
-        {
-            var result = new Result<int>();
-            _ = result.Match(_ => 0, _ => 1);
-        });
-    }
-
-    [Test]
-    public static void Try_Invalid_ThrowsInvalidOperationException()
-    {
-        _ = Assert.Throws<InvalidOperationException>(() =>
-        {
-            var result = new Result<int>();
-            _ = result.Try(out _);
+            error!.TestErrorOf<Error<int>>(e => { Assert.That(e.Value, Is.EqualTo(1234)); });
         });
     }
 
@@ -126,16 +65,6 @@ internal static class ResultTests
         {
             Assert.That(ok, Is.Null);
         }
-    }
-
-    [Test]
-    public static void TryError_Invalid_ThrowsInvalidOperationException()
-    {
-        _ = Assert.Throws<InvalidOperationException>(() =>
-        {
-            var result = new Result<int>();
-            _ = result.TryError(out _);
-        });
     }
 
     [Test]
@@ -159,4 +88,64 @@ internal static class ResultTests
             _ = result.Tap(null!, _ => { });
         });
     }
+
+    [Test]
+    public static void Map_Ok_MapsValue()
+    {
+        _ = 1234
+            .ToResult()
+            .Map(ok => ok * 2)
+            .Tap(ok => { Assert.That(ok, Is.EqualTo(2468)); },
+                _ => { Assert.Fail("Should not be called."); });
+    }
+
+    [Test]
+    public static void MapError_Error_MapsError()
+    {
+        _ = new Error<string>("error")
+            .ToResult<int>()
+            .MapError(_ => 1234.ToError())
+            .Tap(
+                _ => { Assert.Fail("Should not be called."); },
+                error =>
+                {
+                    error.TestErrorOf<Error<int>>(intError => { Assert.That(intError.Value, Is.EqualTo(1234)); });
+                });
+    }
+    
+    [Test]
+    public static void Bind_Ok_MapsValue()
+    {
+        _ = 1234
+            .ToResult()
+            .Bind(ok => (ok * 2).ToResult())
+            .Tap(ok => { Assert.That(ok, Is.EqualTo(2468)); },
+                _ => { Assert.Fail("Should not be called."); });
+    }
+
+    [Test]
+    public static void BindError_Error_MapsError()
+    {
+        _ = new Error<string>("error")
+            .ToResult<int>()
+            .BindError(_ => 1234.ToError().ToResult<int>())
+            .Tap(
+                _ => { Assert.Fail("Should not be called."); },
+                error =>
+                {
+                    error.TestErrorOf<Error<int>>(intError => { Assert.That(intError.Value, Is.EqualTo(1234)); });
+                });
+    }
+    
+    [Test]
+    public static void Match_Ok_MapsValue()
+    {
+        var result = 1234
+            .ToResult()
+            .Match(
+                ok => ok * 2,
+                _ => 0);
+        Assert.That(result, Is.EqualTo(2468));
+    }
+
 }
