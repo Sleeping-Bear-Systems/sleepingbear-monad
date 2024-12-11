@@ -1,3 +1,5 @@
+using SleepingBear.Monad.Monads;
+
 namespace SleepingBear.Monad.Partials.Test;
 
 /// <summary>
