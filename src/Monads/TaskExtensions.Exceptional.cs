@@ -71,13 +71,9 @@ public static partial class TaskExtensions
 
         var (state, value, exception) = await task.ConfigureAwait(false);
         if (state)
-        {
             await valueAction(value!).ConfigureAwait(false);
-        }
         else
-        {
             await exceptionAction(exception!).ConfigureAwait(false);
-        }
 
         return await task.ConfigureAwait(false);
     }

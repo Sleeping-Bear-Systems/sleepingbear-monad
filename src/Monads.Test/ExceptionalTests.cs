@@ -76,13 +76,9 @@ internal static class ExceptionalTests
     {
         var exceptional = new Exceptional<int>(1234);
         if (exceptional.Try(out var value))
-        {
             Assert.That(value, Is.EqualTo(1234));
-        }
         else
-        {
             Assert.Fail("Should not be called.");
-        }
     }
 
     [Test]

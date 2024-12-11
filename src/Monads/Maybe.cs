@@ -118,13 +118,9 @@ public readonly record struct Maybe<TSome> where TSome : notnull
         ArgumentNullException.ThrowIfNull(noneAction);
 
         if (this.IsSome)
-        {
             someAction(this._value!);
-        }
         else
-        {
             noneAction();
-        }
 
         return this;
     }

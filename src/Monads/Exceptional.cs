@@ -94,13 +94,9 @@ public readonly record struct Exceptional<TValue> where TValue : notnull
         ArgumentNullException.ThrowIfNull(exceptionAction);
 
         if (this.IsValue)
-        {
             valueAction(this._value!);
-        }
         else
-        {
             exceptionAction(this._exception!);
-        }
 
         return this;
     }

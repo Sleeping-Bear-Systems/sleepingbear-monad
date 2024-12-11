@@ -89,12 +89,8 @@ internal static class MaybeTests
     {
         var maybe = new Maybe<string>("some");
         if (maybe.Try(out var some))
-        {
             Assert.That(some, Is.EqualTo("some"));
-        }
         else
-        {
             Assert.Fail("Should not be called.");
-        }
     }
 }
