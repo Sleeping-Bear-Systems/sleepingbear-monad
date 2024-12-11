@@ -20,7 +20,7 @@ internal static class MaybeExtensionsTests
             .ToMaybe()
             .Where(some => some == 1234)
             .Tap(
-                some => { Assert.That(some, Is.EqualTo(1234)); }, 
+                some => { Assert.That(some, Is.EqualTo(1234)); },
                 () => { Assert.Fail("Should not be called."); });
     }
 
@@ -59,7 +59,7 @@ internal static class MaybeExtensionsTests
         _ = new Maybe<string>("some")
             .Map(some => some.ToUpperInvariant())
             .Tap(
-                some => { Assert.That(some, Is.EqualTo("SOME")); }, 
+                some => { Assert.That(some, Is.EqualTo("SOME")); },
                 () => { Assert.Fail("Should not be called."); });
     }
 
