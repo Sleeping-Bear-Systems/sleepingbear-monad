@@ -19,23 +19,13 @@ public static class EnumerableExtensions
     {
         ArgumentNullException.ThrowIfNull(predicate);
 
-        if (source is null)
-        {
-            return Maybe<TValue>.None;
-        }
+        if (source is null) return Maybe<TValue>.None;
 
-        if (!typeof(TValue).IsValueType)
-        {
-            return source.FirstOrDefault(predicate).ToMaybe();
-        }
+        if (!typeof(TValue).IsValueType) return source.FirstOrDefault(predicate).ToMaybe();
 
         foreach (var item in source)
-        {
             if (predicate(item))
-            {
                 return item.ToMaybe();
-            }
-        }
 
         return Maybe<TValue>.None;
     }

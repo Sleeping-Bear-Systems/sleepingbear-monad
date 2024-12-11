@@ -25,11 +25,9 @@ public static partial class TaskExtensions
         ArgumentNullException.ThrowIfNull(bindFunc);
 
         var (isOk, ok, error) = await task.ConfigureAwait(false);
-        return isOk switch
-        {
-            true => await bindFunc(ok!).ConfigureAwait(false),
-            false => new Result<TOkOut>(error!)
-        };
+        return isOk
+            ? await bindFunc(ok!).ConfigureAwait(false)
+            : new Result<TOkOut>(error!);
     }
 
     /// <summary>
@@ -49,11 +47,9 @@ public static partial class TaskExtensions
         ArgumentNullException.ThrowIfNull(bindFunc);
 
         var (isOk, ok, error) = await task.ConfigureAwait(false);
-        return isOk switch
-        {
-            true => bindFunc(ok!),
-            false => new Result<TOkOut>(error!)
-        };
+        return isOk
+            ? bindFunc(ok!)
+            : new Result<TOkOut>(error!);
     }
 
     /// <summary>
@@ -255,13 +251,9 @@ public static partial class TaskExtensions
 
         var (isOk, ok, error) = await task.ConfigureAwait(false);
         if (isOk)
-        {
             await okFunc(ok!).ConfigureAwait(false);
-        }
         else
-        {
             await errorFunc(error!).ConfigureAwait(false);
-        }
 
         return await task.ConfigureAwait(false);
     }
@@ -286,13 +278,9 @@ public static partial class TaskExtensions
 
         var (isOk, ok, error) = await task.ConfigureAwait(false);
         if (isOk)
-        {
             okAction(ok!);
-        }
         else
-        {
             errorAction(error!);
-        }
 
         return await task.ConfigureAwait(false);
     }
