@@ -46,4 +46,44 @@ internal static class ResultExtensionTests
                 .Where(null!, some => new Error<int>(some));
         });
     }
+
+    [Test]
+    public static void MapIf_PredicateTrue_ReturnsMappedValue()
+    {
+        _ = 1234
+            .ToResult()
+            .MapIf(ok => ok > 0, ok => -ok)
+            .Tap(ok => Assert.That(ok, Is.EqualTo(-1234)),
+                _ => Assert.Fail("Should not be called."));
+    }
+
+    [Test]
+    public static void MapIf_PredicateFalse_ReturnsOriginalValue()
+    {
+        _ = 1234
+            .ToResult()
+            .MapIf(ok => ok < 0, ok => -ok)
+            .Tap(ok => Assert.That(ok, Is.EqualTo(1234)),
+                _ => Assert.Fail("Should not be called."));
+    }
+
+    [Test]
+    public static void BindIf_PredicateTrue_ReturnsMappedValue()
+    {
+        _ = 1234
+            .ToResult()
+            .BindIf(ok => ok > 0, ok => (-ok).ToResult())
+            .Tap(ok => Assert.That(ok, Is.EqualTo(-1234)),
+                _ => Assert.Fail("Should not be called."));
+    }
+
+    [Test]
+    public static void BindIf_PredicateFalse_ReturnsOriginalValue()
+    {
+        _ = 1234
+            .ToResult()
+            .BindIf(ok => ok < 0, ok => (-ok).ToResult())
+            .Tap(ok => Assert.That(ok, Is.EqualTo(1234)),
+                _ => Assert.Fail("Should not be called."));
+    }
 }
