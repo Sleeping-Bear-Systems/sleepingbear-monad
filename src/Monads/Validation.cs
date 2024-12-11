@@ -11,6 +11,16 @@ public readonly record struct Validation<TValue> where TValue : notnull
     private readonly ImmutableList<Error>? _errors;
     private readonly TValue? _value;
 
+    /// <summary>
+    ///     Default constructor.
+    /// </summary>
+    public Validation()
+    {
+        this._value = default;
+        this._errors = ImmutableList<Error>.Empty;
+        this.IsValid = false;
+    }
+
     internal Validation(TValue value)
     {
         this._value = value;
@@ -24,17 +34,7 @@ public readonly record struct Validation<TValue> where TValue : notnull
         this._errors = errors ?? ImmutableList<Error>.Empty;
         this.IsValid = false;
     }
-
-    /// <summary>
-    ///     Default constructor.
-    /// </summary>
-    public Validation()
-    {
-        this._value = default;
-        this._errors = ImmutableList<Error>.Empty;
-        this.IsValid = false;
-    }
-
+    
     /// <summary>
     ///     Is valid?
     /// </summary>
