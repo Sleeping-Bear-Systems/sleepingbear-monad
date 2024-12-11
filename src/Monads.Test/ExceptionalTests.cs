@@ -16,24 +16,24 @@ internal static class ExceptionalTests
         {
             Assert.That(exceptional.IsValue, Is.True);
             Assert.That(exceptional.IsException, Is.False);
-            Assert.That(state, Is.EqualTo(ExceptionalState.Value));
+            Assert.That(state, Is.True);
             Assert.That(value, Is.EqualTo(1234));
             Assert.That(exception, Is.Null);
         });
     }
 
     [Test]
-    public static void Ctor_Default_SetInvalid()
+    public static void Ctor_Default_InvalidOperationException()
     {
         var exceptional = new Exceptional<int>();
-        var (state, value, exception) = exceptional;
+        var (isValue, value, exception) = exceptional;
         Assert.Multiple(() =>
         {
             Assert.That(exceptional.IsValue, Is.False);
-            Assert.That(exceptional.IsException, Is.False);
-            Assert.That(state, Is.EqualTo(ExceptionalState.Invalid));
+            Assert.That(exceptional.IsException, Is.True);
+            Assert.That(isValue, Is.False);
             Assert.That(value, Is.EqualTo(default(int)));
-            Assert.That(exception, Is.Null);
+            Assert.That(exception, Is.InstanceOf<InvalidOperationException>());
         });
     }
 
@@ -42,12 +42,12 @@ internal static class ExceptionalTests
     {
         var exception = new InvalidOperationException();
         var exceptional = new Exceptional<int>(exception);
-        var (state, value, outException) = exceptional;
+        var (isValue, value, outException) = exceptional;
         Assert.Multiple(() =>
         {
             Assert.That(exceptional.IsValue, Is.False);
             Assert.That(exceptional.IsException, Is.True);
-            Assert.That(state, Is.EqualTo(ExceptionalState.Exception));
+            Assert.That(isValue, Is.False);
             Assert.That(value, Is.EqualTo(default(int)));
             Assert.That(outException, Is.SameAs(exception));
         });

@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 
 namespace SleepingBear.Monad.Monads;
 
@@ -16,8 +15,6 @@ public static partial class TaskExtensions
     /// <typeparam name="TValue">The value type.</typeparam>
     /// <typeparam name="TValueOut">The output value type.</typeparam>
     /// <returns>A <see cref="Task{TResult}" />.</returns>
-    /// <exception cref="InvalidOperationException">Thrown if state is Invalid.</exception>
-    /// <exception cref="UnreachableException">Thrown if the state is unknown.</exception>
     [SuppressMessage("ReSharper", "NullableWarningSuppressionIsUsed")]
     public static async Task<Exceptional<TValueOut>> MapAsync<TValue, TValueOut>(
         this Task<Exceptional<TValue>> task,
@@ -26,15 +23,10 @@ public static partial class TaskExtensions
         ArgumentNullException.ThrowIfNull(task);
         ArgumentNullException.ThrowIfNull(mapFunc);
 
-        var exceptional = await task.ConfigureAwait(false);
-        var (state, value, exception) = exceptional;
-        return state switch
-        {
-            ExceptionalState.Value => new Exceptional<TValueOut>(await mapFunc(value!).ConfigureAwait(false)),
-            ExceptionalState.Exception => new Exceptional<TValueOut>(exception!),
-            ExceptionalState.Invalid => throw new InvalidOperationException(),
-            _ => throw new UnreachableException()
-        };
+        var (isValue, value, exception) = await task.ConfigureAwait(false);
+        return isValue
+            ? new Exceptional<TValueOut>(await mapFunc(value!).ConfigureAwait(false))
+            : new Exceptional<TValueOut>(exception!);
     }
 
     /// <summary>
@@ -45,8 +37,6 @@ public static partial class TaskExtensions
     /// <typeparam name="TValue">The value type.</typeparam>
     /// <typeparam name="TValueOut">The output value type.</typeparam>
     /// <returns>A <see cref="Task{TResult}" />.</returns>
-    /// <exception cref="InvalidOperationException">Thrown if state is Invalid.</exception>
-    /// <exception cref="UnreachableException">Thrown if the state is unknown.</exception>
     [SuppressMessage("ReSharper", "NullableWarningSuppressionIsUsed")]
     public static async Task<Exceptional<TValueOut>> BindAsync<TValue, TValueOut>(
         this Task<Exceptional<TValue>> task,
@@ -55,15 +45,10 @@ public static partial class TaskExtensions
         ArgumentNullException.ThrowIfNull(task);
         ArgumentNullException.ThrowIfNull(bindFunc);
 
-        var exceptional = await task.ConfigureAwait(false);
-        var (state, value, exception) = exceptional;
-        return state switch
-        {
-            ExceptionalState.Value => await bindFunc(value!).ConfigureAwait(false),
-            ExceptionalState.Exception => new Exceptional<TValueOut>(exception!),
-            ExceptionalState.Invalid => throw new InvalidOperationException(),
-            _ => throw new UnreachableException()
-        };
+        var (isValue, value, exception) = await task.ConfigureAwait(false);
+        return isValue
+            ? await bindFunc(value!).ConfigureAwait(false)
+            : new Exceptional<TValueOut>(exception!);
     }
 
     /// <summary>
@@ -74,8 +59,6 @@ public static partial class TaskExtensions
     /// <param name="exceptionAction">The 'Exception' action.</param>
     /// <typeparam name="TValue">The value type.</typeparam>
     /// <returns>A <see cref="Task{TResult}" />.</returns>
-    /// <exception cref="InvalidOperationException">Thrown if state is Invalid.</exception>
-    /// <exception cref="UnreachableException">Thrown if the state is unknown.</exception>
     [SuppressMessage("ReSharper", "NullableWarningSuppressionIsUsed")]
     public static async Task<Exceptional<TValue>> TapAsync<TValue>(
         this Task<Exceptional<TValue>> task,
@@ -86,23 +69,17 @@ public static partial class TaskExtensions
         ArgumentNullException.ThrowIfNull(valueAction);
         ArgumentNullException.ThrowIfNull(exceptionAction);
 
-        var exceptional = await task.ConfigureAwait(false);
-        var (state, value, exception) = exceptional;
-        switch (state)
+        var (state, value, exception) = await task.ConfigureAwait(false);
+        if (state)
         {
-            case ExceptionalState.Value:
-                await valueAction(value!).ConfigureAwait(false);
-                break;
-            case ExceptionalState.Invalid:
-                await exceptionAction(exception!).ConfigureAwait(false);
-                break;
-            case ExceptionalState.Exception:
-                throw new InvalidOperationException();
-            default:
-                throw new UnreachableException();
+            await valueAction(value!).ConfigureAwait(false);
+        }
+        else
+        {
+            await exceptionAction(exception!).ConfigureAwait(false);
         }
 
-        return exceptional;
+        return await task.ConfigureAwait(false);
     }
 
     /// <summary>
@@ -114,8 +91,6 @@ public static partial class TaskExtensions
     /// <typeparam name="TValue">The 'Value' type.</typeparam>
     /// <typeparam name="TValueOut">The output 'Value' type.</typeparam>
     /// <returns>A <see cref="Task{TResult}" />.</returns>
-    /// <exception cref="InvalidOperationException">Thrown if state is Invalid.</exception>
-    /// <exception cref="UnreachableException">Thrown if the state is unknown.</exception>
     [SuppressMessage("ReSharper", "NullableWarningSuppressionIsUsed")]
     public static async Task<TValueOut> MatchAsync<TValue, TValueOut>(
         this Task<Exceptional<TValue>> task,
@@ -126,14 +101,9 @@ public static partial class TaskExtensions
         ArgumentNullException.ThrowIfNull(valueFunc);
         ArgumentNullException.ThrowIfNull(exceptionFunc);
 
-        var exceptional = await task.ConfigureAwait(false);
-        var (state, value, exception) = exceptional;
-        return state switch
-        {
-            ExceptionalState.Value => await valueFunc(value!).ConfigureAwait(false),
-            ExceptionalState.Invalid => await exceptionFunc(exception!).ConfigureAwait(false),
-            ExceptionalState.Exception => throw new InvalidOperationException(),
-            _ => throw new UnreachableException()
-        };
+        var (isValue, value, exception) = await task.ConfigureAwait(false);
+        return isValue
+            ? await valueFunc(value!).ConfigureAwait(false)
+            : await exceptionFunc(exception!).ConfigureAwait(false);
     }
 }

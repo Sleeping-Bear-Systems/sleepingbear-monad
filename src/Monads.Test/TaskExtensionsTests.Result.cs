@@ -205,30 +205,34 @@ internal static partial class TaskExtensionsTests
     }
 
     [Test]
-    public static Task MatchAsync_ResultInvalid_ThrowsInvalidOperationException()
+    public static async Task TapAsync_Ok_CallSynchronousOkFunc()
     {
-        _ = Assert.ThrowsAsync<InvalidOperationException>(async () =>
-        {
-            _ = await new Result<int>()
-                .ToTask()
-                .MatchAsync(_ => 0.ToTask(), _ => 1.ToTask())
-                .ConfigureAwait(false);
-        });
-        return Task.CompletedTask;
+        _ = await 1234
+            .ToResult()
+            .ToTask()
+            .TapAsync(
+                ok => { Assert.That(ok, Is.EqualTo(1234)); },
+                _ => { Assert.Fail("Should not be called."); })
+            .ConfigureAwait(true);
     }
 
     [Test]
-    public static Task TapAsync_ResultInvalid_ThrowsInvalidOperationException()
+    public static async Task TapAsync_Ok_CallAsynchronousOkFunc()
     {
-        _ = Assert.ThrowsAsync<InvalidOperationException>(async () =>
-        {
-            _ = await new Result<int>()
-                .ToTask()
-                .TapAsync(
-                    async _ => { await Task.Delay(0).ConfigureAwait(false); },
-                    async _ => { await Task.Delay(0).ConfigureAwait(false); })
-                .ConfigureAwait(false);
-        });
-        return Task.CompletedTask;
+        _ = await 1234
+            .ToResult()
+            .ToTask()
+            .TapAsync(
+                ok =>
+                {
+                    Assert.That(ok, Is.EqualTo(1234));
+                    return Task.CompletedTask;
+                },
+                _ =>
+                {
+                    Assert.Fail("Should not be called.");
+                    return Task.CompletedTask;
+                })
+            .ConfigureAwait(true);
     }
 }

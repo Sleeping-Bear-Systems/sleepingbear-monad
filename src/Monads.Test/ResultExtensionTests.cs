@@ -12,10 +12,10 @@ internal static class ResultExtensionTests
     public static void ToResult_OK_ValidatesBehavior()
     {
         var result = 1234.ToResult();
-        result.Deconstruct(out var state, out var ok, out var error);
+        var (isOk, ok, error) = result;
         Assert.Multiple(() =>
         {
-            Assert.That(state, Is.EqualTo(ResultState.Ok));
+            Assert.That(isOk, Is.True);
             Assert.That(ok, Is.EqualTo(1234));
             Assert.That(error, Is.Null);
         });
@@ -25,14 +25,13 @@ internal static class ResultExtensionTests
     [SuppressMessage("ReSharper", "NullableWarningSuppressionIsUsed")]
     public static void ToResult_Error_ValidatesBehavior()
     {
-        var error = 1234.ToError();
-        var result = error.ToResult<string>();
-        result.Deconstruct(out var state, out var ok, out var outError);
+        var result = 1234.ToError().ToResult<string>();
+        var (isOk, ok, error) = result;
         Assert.Multiple(() =>
         {
-            Assert.That(state, Is.EqualTo(ResultState.Error));
+            Assert.That(isOk, Is.False);
             Assert.That(ok, Is.Null);
-            outError!.TestErrorOf<Error<int>>(e => { Assert.That(e.Value, Is.EqualTo(1234)); });
+            error!.TestErrorOf<Error<int>>(e => { Assert.That(e.Value, Is.EqualTo(1234)); });
         });
     }
 

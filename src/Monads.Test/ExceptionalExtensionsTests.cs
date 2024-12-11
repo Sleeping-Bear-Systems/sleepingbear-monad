@@ -8,13 +8,6 @@ namespace SleepingBear.Monad.Monads.Test;
 internal static class ExceptionalExtensionsTests
 {
     [Test]
-    public static void ToResult_Invalid_ThrowsInvalidOperationException()
-    {
-        var exceptional = new Exceptional<int>();
-        Assert.Throws<InvalidOperationException>(() => exceptional.ToResult());
-    }
-
-    [Test]
     public static void ToResult_Value_ReturnResultOk()
     {
         _ = 1234
