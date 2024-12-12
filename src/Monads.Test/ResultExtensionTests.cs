@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using SleepingBear.Monad.Errors;
 
 namespace SleepingBear.Monad.Monads.Test;
@@ -11,7 +12,7 @@ internal static class ResultExtensionTests
     [Test]
     public static void ToResult_OK_ValidatesBehavior()
     {
-        var result = 1234.ToResult();
+        var result = Result.Ok(1234);
         var (isOk, ok, error) = result;
         Assert.Multiple(() =>
         {
@@ -25,13 +26,15 @@ internal static class ResultExtensionTests
     [SuppressMessage("ReSharper", "NullableWarningSuppressionIsUsed")]
     public static void ToResult_Error_ValidatesBehavior()
     {
-        var result = 1234.ToError().ToResult<string>();
+        var result = 1234
+            .ToGenericError()
+            .ToResult<string>();
         var (isOk, ok, error) = result;
         Assert.Multiple(() =>
         {
             Assert.That(isOk, Is.False);
             Assert.That(ok, Is.Null);
-            error!.TestErrorOf<Error<int>>(e => { Assert.That(e.Value, Is.EqualTo(1234)); });
+            error!.TestErrorOf<GenericError<int>>(e => { Assert.That(e.Value, Is.EqualTo(1234)); });
         });
     }
 
@@ -42,15 +45,15 @@ internal static class ResultExtensionTests
         _ = Assert.Throws<ArgumentNullException>(() =>
         {
             _ = new Result<int>()
-                .Where(null!, some => new Error<int>(some));
+                .Where(null!, some => new GenericError<int>(some));
         });
     }
 
     [Test]
     public static void MapIf_PredicateTrue_ReturnsMappedValue()
     {
-        _ = 1234
-            .ToResult()
+        _ = Result
+            .Ok(1234)
             .MapIf(ok => ok > 0, ok => -ok)
             .Tap(ok => Assert.That(ok, Is.EqualTo(-1234)),
                 _ => Assert.Fail("Should not be called."));
@@ -59,8 +62,8 @@ internal static class ResultExtensionTests
     [Test]
     public static void MapIf_PredicateFalse_ReturnsOriginalValue()
     {
-        _ = 1234
-            .ToResult()
+        _ = Result
+            .Ok(1234)
             .MapIf(ok => ok < 0, ok => -ok)
             .Tap(ok => Assert.That(ok, Is.EqualTo(1234)),
                 _ => Assert.Fail("Should not be called."));
@@ -69,9 +72,9 @@ internal static class ResultExtensionTests
     [Test]
     public static void BindIf_PredicateTrue_ReturnsMappedValue()
     {
-        _ = 1234
-            .ToResult()
-            .BindIf(ok => ok > 0, ok => (-ok).ToResult())
+        _ = Result
+            .Ok(1234)
+            .BindIf(ok => ok > 0, ok => -ok)
             .Tap(ok => Assert.That(ok, Is.EqualTo(-1234)),
                 _ => Assert.Fail("Should not be called."));
     }
@@ -79,9 +82,9 @@ internal static class ResultExtensionTests
     [Test]
     public static void BindIf_PredicateFalse_ReturnsOriginalValue()
     {
-        _ = 1234
-            .ToResult()
-            .BindIf(ok => ok < 0, ok => (-ok).ToResult())
+        _ = Result
+            .Ok(1234)
+            .BindIf(ok => ok < 0, ok => -ok)
             .Tap(ok => Assert.That(ok, Is.EqualTo(1234)),
                 _ => Assert.Fail("Should not be called."));
     }
@@ -90,8 +93,8 @@ internal static class ResultExtensionTests
     public static void Tap_Ok_OkActionCalled()
     {
         var okActionCalled = false;
-        _ = 1234
-            .ToResult()
+        _ = Result
+            .Ok(1234)
             .Tap(ok =>
             {
                 Assert.That(ok, Is.EqualTo(1234));
@@ -105,13 +108,13 @@ internal static class ResultExtensionTests
     {
         var errorActionCalled = false;
         _ = "error"
-            .ToError()
+            .ToGenericError()
             .ToResult<int>()
             .Tap(
                 _ => { Assert.Fail("Should not be called"); },
                 error =>
                 {
-                    error.TestErrorOf<Error<string>>(e => Assert.That(e.Value, Is.EqualTo("error")));
+                    error.TestErrorOf<GenericError<string>>(e => Assert.That(e.Value, Is.EqualTo("error")));
                     errorActionCalled = true;
                 });
         Assert.That(errorActionCalled, Is.True);
@@ -120,8 +123,8 @@ internal static class ResultExtensionTests
     [Test]
     public static void Try_Ok_ReturnsOk()
     {
-        var isOk = 1234
-            .ToResult()
+        var isOk = Result
+            .Ok(1234)
             .Try(out var ok);
         Assert.Multiple(() =>
         {
@@ -133,18 +136,18 @@ internal static class ResultExtensionTests
     [Test]
     public static void TryError_Error_ReturnsError()
     {
-        var isOk = 1234
-            .ToError()
+        var isError = 1234
+            .ToGenericError()
             .ToResult<int>()
-            .TryError(out var resultError);
-        Assert.That(isOk, Is.True);
-        resultError!.TestErrorOf<Error<int>>(e => { Assert.That(e.Value, Is.EqualTo(1234)); });
+            .TryError(out var error);
+        Assert.That(isError, Is.True);
+        error.TestErrorOf<GenericError<int>>(e => { Assert.That(e.Value, Is.EqualTo(1234)); });
     }
 
     [Test]
     public static void Try_Error_ReturnsError()
     {
-        var error = new Error<string>("error");
+        var error = new GenericError<string>("error");
         var result = new Result<string>(error);
         if (result.Try(out var ok))
             Assert.Fail("Should not be called.");
@@ -155,8 +158,8 @@ internal static class ResultExtensionTests
     [Test]
     public static void Map_Ok_MapsValue()
     {
-        _ = 1234
-            .ToResult()
+        _ = Result
+            .Ok(1234)
             .Map(ok => ok * 2)
             .Tap(ok => { Assert.That(ok, Is.EqualTo(2468)); },
                 _ => { Assert.Fail("Should not be called."); });
@@ -165,46 +168,54 @@ internal static class ResultExtensionTests
     [Test]
     public static void MapError_Error_MapsError()
     {
-        _ = new Error<string>("error")
+        _ = new GenericError<string>("error")
             .ToResult<int>()
-            .MapError(_ => 1234.ToError())
+            .MapError(_ => 1234.ToGenericError())
             .Tap(
                 _ => { Assert.Fail("Should not be called."); },
                 error =>
                 {
-                    error.TestErrorOf<Error<int>>(intError => { Assert.That(intError.Value, Is.EqualTo(1234)); });
+                    error.TestErrorOf<GenericError<int>>(intError =>
+                    {
+                        Assert.That(intError.Value, Is.EqualTo(1234));
+                    });
                 });
     }
 
     [Test]
     public static void Bind_Ok_MapsValue()
     {
-        _ = 1234
-            .ToResult()
-            .Bind(ok => (ok * 2).ToResult())
-            .Tap(ok => { Assert.That(ok, Is.EqualTo(2468)); },
+        _ = Result
+            .Ok(1234)
+            .Bind(ok => ok > 0
+                ? ok.ToString(CultureInfo.InvariantCulture)
+                : "error".ToGenericError().ToResult<string>())
+            .Tap(ok => { Assert.That(ok, Is.EqualTo("1234")); },
                 _ => { Assert.Fail("Should not be called."); });
     }
 
     [Test]
     public static void BindError_Error_MapsError()
     {
-        _ = new Error<string>("error")
+        _ = new GenericError<string>("error")
             .ToResult<int>()
-            .BindError(_ => 1234.ToError().ToResult<int>())
+            .BindError(_ => 1234.ToGenericError().ToResult<int>())
             .Tap(
                 _ => { Assert.Fail("Should not be called."); },
                 error =>
                 {
-                    error.TestErrorOf<Error<int>>(intError => { Assert.That(intError.Value, Is.EqualTo(1234)); });
+                    error.TestErrorOf<GenericError<int>>(intError =>
+                    {
+                        Assert.That(intError.Value, Is.EqualTo(1234));
+                    });
                 });
     }
 
     [Test]
     public static void Match_Ok_MapsValue()
     {
-        var result = 1234
-            .ToResult()
+        var result = Result
+            .Ok(1234)
             .Match(
                 ok => ok * 2,
                 _ => 0);

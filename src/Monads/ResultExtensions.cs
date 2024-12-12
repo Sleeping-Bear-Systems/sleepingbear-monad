@@ -9,17 +9,6 @@ namespace SleepingBear.Monad.Monads;
 public static class ResultExtensions
 {
     /// <summary>
-    ///     Converts a value to a <see cref="Result{TOk}" />.
-    /// </summary>
-    /// <param name="ok">The value being lifted.</param>
-    /// <typeparam name="TOk">The type of the value being lifted.</typeparam>
-    /// <returns>A <see cref="Result{TOk}" />.</returns>
-    public static Result<TOk> ToResult<TOk>(this TOk ok) where TOk : notnull
-    {
-        return new Result<TOk>(ok);
-    }
-
-    /// <summary>
     ///     Converts a <see cref="Error" /> to a <see cref="Result{TOk}" />.
     /// </summary>
     /// <param name="error">The error value.</param>
@@ -49,7 +38,7 @@ public static class ResultExtensions
         return result.Try(out var ok)
             ? predicate(ok)
                 ? result
-                : errorFunc(ok).ToResult<TOk>()
+                : errorFunc(ok)
             : result;
     }
 
@@ -96,7 +85,7 @@ public static class ResultExtensions
 
         return result.Try(out var ok)
             ? predicate(ok)
-                ? mapFunc(ok).ToResult()
+                ? mapFunc(ok)
                 : result
             : result;
     }
@@ -156,7 +145,7 @@ public static class ResultExtensions
     {
         var (isOk, _, error2) = result;
         error = isOk
-            ? default
+            ? null
             : error2!;
         return !isOk;
     }
@@ -178,8 +167,8 @@ public static class ResultExtensions
 
         var (isOk, ok, error) = result;
         return isOk
-            ? new Result<TOkOut>(mapFunc(ok!))
-            : new Result<TOkOut>(error!);
+            ? mapFunc(ok!)
+            : error!;
     }
 
     /// <summary>
@@ -197,8 +186,8 @@ public static class ResultExtensions
 
         var (isOk, ok, error) = result;
         return isOk
-            ? new Result<TOk>(ok!)
-            : new Result<TOk>(mapErrorFunc(error!));
+            ? ok!
+            : mapErrorFunc(error!);
     }
 
     /// <summary>
@@ -219,7 +208,7 @@ public static class ResultExtensions
         var (isOk, ok, error) = result;
         return isOk
             ? bindFunc(ok!)
-            : new Result<TOkOut>(error!);
+            : error!;
     }
 
     /// <summary>
@@ -237,7 +226,7 @@ public static class ResultExtensions
 
         var (isOk, ok, error) = result;
         return isOk
-            ? new Result<TOk>(ok!)
+            ? ok!
             : bindFunc(error!);
     }
 

@@ -24,7 +24,7 @@ public readonly record struct Validation<TValue> where TValue : notnull
     internal Validation(TValue value)
     {
         this._value = value;
-        this._errors = default;
+        this._errors = null;
         this.IsValid = true;
     }
 

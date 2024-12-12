@@ -12,7 +12,7 @@ internal static class ExceptionalExtensionsTests
     public static void ToResult_Value_ReturnResultOk()
     {
         _ = 1234
-            .ToExceptional()
+            .ToExceptionalValue()
             .ToResult()
             .Tap(value => { Assert.That(value, Is.EqualTo(1234)); },
                 _ => { Assert.Fail("Should not be called."); });
@@ -23,14 +23,14 @@ internal static class ExceptionalExtensionsTests
     {
         var exception = new InvalidOperationException("test");
         _ = exception
-            .ToExceptional<int>()
+            .ToExceptionalException<int>()
             .ToResult()
             .Tap(_ => { Assert.Fail("Should not be called."); },
                 error =>
                 {
                     switch (error)
                     {
-                        case Error<Exception> exceptionError:
+                        case GenericError<Exception> exceptionError:
                             Assert.That(exceptionError.Value, Is.SameAs(exception));
                             break;
                         default:

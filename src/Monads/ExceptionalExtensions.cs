@@ -14,7 +14,7 @@ public static class ExceptionalExtensions
     /// <param name="value">The value.</param>
     /// <typeparam name="TValue">The value type.</typeparam>
     /// <returns>A <see cref="Exceptional{TValue}" />.</returns>
-    public static Exceptional<TValue> ToExceptional<TValue>(this TValue value) where TValue : notnull
+    public static Exceptional<TValue> ToExceptionalValue<TValue>(this TValue value) where TValue : notnull
     {
         return new Exceptional<TValue>(value);
     }
@@ -25,7 +25,7 @@ public static class ExceptionalExtensions
     /// <param name="exception">The exception.></param>
     /// <typeparam name="TValue">The value type.</typeparam>
     /// <returns>A <see cref="Exceptional{TValue}" />.</returns>
-    public static Exceptional<TValue> ToExceptional<TValue>(this Exception exception) where TValue : notnull
+    public static Exceptional<TValue> ToExceptionalException<TValue>(this Exception exception) where TValue : notnull
     {
         return new Exceptional<TValue>(exception);
     }
@@ -41,8 +41,8 @@ public static class ExceptionalExtensions
     {
         var (isValue, value, exception) = exceptional;
         return isValue
-            ? value!.ToResult()
-            : exception!.ToError().ToResult<TValue>();
+            ? value!
+            : exception!.ToGenericError().ToResult<TValue>();
     }
 
     /// <summary>
@@ -91,9 +91,13 @@ public static class ExceptionalExtensions
 
         var (isValue, value, exception) = exceptional;
         if (isValue)
+        {
             valueAction(value!);
+        }
         else
+        {
             exceptionAction(exception!);
+        }
 
         return exceptional;
     }

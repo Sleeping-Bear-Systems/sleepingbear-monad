@@ -129,9 +129,13 @@ public static class MaybeExtensions
 
         var (isSome, some) = maybe;
         if (isSome)
+        {
             someAction(some!);
+        }
         else
+        {
             noneAction();
+        }
 
         return maybe;
     }

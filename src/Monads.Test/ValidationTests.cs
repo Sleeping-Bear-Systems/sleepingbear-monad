@@ -18,7 +18,7 @@ internal static class ValidationTests
             Assert.That(validation.IsValid, Is.False);
             Assert.That(validation.IsInvalid, Is.True);
             Assert.That(isValid, Is.False);
-            Assert.That(value, Is.EqualTo(default(int)));
+            Assert.That(value, Is.EqualTo(0));
             Assert.That(errors, Is.Not.Null);
         });
         Assert.That(errors, Is.Empty);
@@ -44,7 +44,7 @@ internal static class ValidationTests
     [SuppressMessage("ReSharper", "PossibleMultipleEnumeration")]
     public static void Ctor_Errors_ReturnsIsValid()
     {
-        var error = new Error<string>("error");
+        var error = new GenericError<string>("error");
         var validation = new Validation<int>([error]);
         var (isValid, value, errors) = validation;
         Assert.Multiple(() =>
@@ -52,7 +52,7 @@ internal static class ValidationTests
             Assert.That(validation.IsValid, Is.False);
             Assert.That(validation.IsInvalid, Is.True);
             Assert.That(isValid, Is.False);
-            Assert.That(value, Is.EqualTo(default(int)));
+            Assert.That(value, Is.EqualTo(0));
             Assert.That(errors, Is.Not.Null);
             var array = errors!.ToArray();
             Assert.That(array, Has.Length.EqualTo(1));

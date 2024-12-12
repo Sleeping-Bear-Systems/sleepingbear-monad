@@ -42,13 +42,13 @@ internal static class ResultTests
     [SuppressMessage("ReSharper", "NullableWarningSuppressionIsUsed")]
     public static void Ctor_Error_ErrorState()
     {
-        var result = new Result<int>(1234.ToError());
+        var result = new Result<int>(1234.ToGenericError());
         var (isOk, ok, error) = result;
         Assert.Multiple(() =>
         {
             Assert.That(isOk, Is.False);
             Assert.That(ok, Is.EqualTo(0));
-            error!.TestErrorOf<Error<int>>(e => { Assert.That(e.Value, Is.EqualTo(1234)); });
+            error!.TestErrorOf<GenericError<int>>(e => { Assert.That(e.Value, Is.EqualTo(1234)); });
         });
     }
 }

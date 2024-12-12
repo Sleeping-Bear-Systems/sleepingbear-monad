@@ -12,8 +12,8 @@ internal static partial class TaskExtensionsTests
     [Test]
     public static async Task MapAsync_AsyncMapFunc_ReturnsMappedValue()
     {
-        _ = await 1234
-            .ToResult()
+        _ = await Result
+            .Ok(1234)
             .ToTask()
             .MapAsync(async ok =>
             {
@@ -29,8 +29,8 @@ internal static partial class TaskExtensionsTests
     [Test]
     public static async Task MapAsync_SyncMapFunc_ReturnsMappedValue()
     {
-        _ = await 1234
-            .ToResult()
+        _ = await Result
+            .Ok(1234)
             .ToTask()
             .MapAsync(ok => ok.ToString(CultureInfo.InvariantCulture))
             .TapAsync(
@@ -42,13 +42,13 @@ internal static partial class TaskExtensionsTests
     [Test]
     public static async Task MapErrorAsync_AsyncMapErrorFunc_ReturnsMappedValue()
     {
-        _ = await new Error<int>(1234)
+        _ = await new GenericError<int>(1234)
             .ToResult<int>()
             .ToTask()
             .MapErrorAsync(async _ =>
             {
                 await Task.Delay(0).ConfigureAwait(false);
-                return "string".ToError();
+                return "string".ToGenericError();
             })
             .TapAsync(
                 _ => { Assert.Fail("Should not be called."); },
@@ -56,7 +56,7 @@ internal static partial class TaskExtensionsTests
                 {
                     switch (error)
                     {
-                        case Error<string> stringError:
+                        case GenericError<string> stringError:
                             Assert.That(stringError.Value, Is.EqualTo("string"));
                             break;
                         default:
@@ -70,17 +70,17 @@ internal static partial class TaskExtensionsTests
     [Test]
     public static async Task MapErrorAsync_SyncMapErrorFunc_ReturnsMappedValue()
     {
-        _ = await new Error<int>(1234)
+        _ = await new GenericError<int>(1234)
             .ToResult<int>()
             .ToTask()
-            .MapErrorAsync(_ => "string".ToError())
+            .MapErrorAsync(_ => "string".ToGenericError())
             .TapAsync(
                 _ => { Assert.Fail("Should not be called."); },
                 error =>
                 {
                     switch (error)
                     {
-                        case Error<string> stringError:
+                        case GenericError<string> stringError:
                             Assert.That(stringError.Value, Is.EqualTo("string"));
                             break;
                         default:
@@ -94,13 +94,13 @@ internal static partial class TaskExtensionsTests
     [Test]
     public static async Task BindAsync_AsyncBindFunc_ReturnsMappedValue()
     {
-        _ = await 1234
-            .ToResult()
+        _ = await Result
+            .Ok(1234)
             .ToTask()
             .BindAsync(async ok =>
             {
                 await Task.Delay(0).ConfigureAwait(false);
-                return ok.ToString(CultureInfo.InvariantCulture).ToResult();
+                return Result.Ok(ok.ToString(CultureInfo.InvariantCulture));
             })
             .TapAsync(
                 value => { Assert.That(value, Is.EqualTo("1234")); },
@@ -111,10 +111,10 @@ internal static partial class TaskExtensionsTests
     [Test]
     public static async Task BindAsync_SyncBindFunc_ReturnsMappedValue()
     {
-        _ = await 1234
-            .ToResult()
+        _ = await Result
+            .Ok(1234)
             .ToTask()
-            .BindAsync(ok => ok.ToString(CultureInfo.InvariantCulture).ToResult())
+            .BindAsync(ok => Result.Ok(ok.ToString(CultureInfo.InvariantCulture)))
             .TapAsync(
                 value => { Assert.That(value, Is.EqualTo("1234")); },
                 _ => { Assert.Fail("Should not be called."); })
@@ -124,13 +124,13 @@ internal static partial class TaskExtensionsTests
     [Test]
     public static async Task BindErrorAsync_AsyncBindErrorFunc_ReturnsMappedValue()
     {
-        _ = await new Error<int>(1234)
+        _ = await new GenericError<int>(1234)
             .ToResult<int>()
             .ToTask()
             .BindErrorAsync(async _ =>
             {
                 await Task.Delay(0).ConfigureAwait(false);
-                return "string".ToError().ToResult<int>();
+                return "string".ToGenericError().ToResult<int>();
             })
             .TapAsync(
                 _ => { Assert.Fail("Should not be called."); },
@@ -138,7 +138,7 @@ internal static partial class TaskExtensionsTests
                 {
                     switch (error)
                     {
-                        case Error<string> stringError:
+                        case GenericError<string> stringError:
                             Assert.That(stringError.Value, Is.EqualTo("string"));
                             break;
                         default:
@@ -152,17 +152,17 @@ internal static partial class TaskExtensionsTests
     [Test]
     public static async Task BindErrorAsync_SyncBindErrorFunc_ReturnsMappedValue()
     {
-        _ = await new Error<int>(1234)
+        _ = await new GenericError<int>(1234)
             .ToResult<int>()
             .ToTask()
-            .BindErrorAsync(_ => "string".ToError().ToResult<int>())
+            .BindErrorAsync(_ => "string".ToGenericError().ToResult<int>())
             .TapAsync(
                 _ => { Assert.Fail("Should not be called."); },
                 error =>
                 {
                     switch (error)
                     {
-                        case Error<string> stringError:
+                        case GenericError<string> stringError:
                             Assert.That(stringError.Value, Is.EqualTo("string"));
                             break;
                         default:
@@ -176,8 +176,8 @@ internal static partial class TaskExtensionsTests
     [Test]
     public static async Task MatchAsync_SyncFunc_ReturnMatchedValue()
     {
-        var matched = await 1234
-            .ToResult()
+        var matched = await Result
+            .Ok(1234)
             .ToTask()
             .MatchAsync(value => value.ToString(CultureInfo.InvariantCulture), _ => "Error")
             .ConfigureAwait(true);
@@ -187,8 +187,8 @@ internal static partial class TaskExtensionsTests
     [Test]
     public static async Task MatchAsync_AsyncFunc_ReturnMatchedValue()
     {
-        var matched = await 1234
-            .ToResult()
+        var matched = await Result
+            .Ok(1234)
             .ToTask()
             .MatchAsync(
                 async value =>
@@ -207,8 +207,8 @@ internal static partial class TaskExtensionsTests
     [Test]
     public static async Task TapAsync_Ok_CallSynchronousOkFunc()
     {
-        _ = await 1234
-            .ToResult()
+        _ = await Result
+            .Ok(1234)
             .ToTask()
             .TapAsync(
                 ok => { Assert.That(ok, Is.EqualTo(1234)); },
@@ -219,8 +219,8 @@ internal static partial class TaskExtensionsTests
     [Test]
     public static async Task TapAsync_Ok_CallAsynchronousOkFunc()
     {
-        _ = await 1234
-            .ToResult()
+        _ = await Result
+            .Ok(1234)
             .ToTask()
             .TapAsync(
                 ok =>
