@@ -9,23 +9,12 @@ namespace SleepingBear.Monad.Monads;
 public static class ResultExtensions
 {
     /// <summary>
-    ///     Converts a value to a <see cref="Result{TOk}" />.
-    /// </summary>
-    /// <param name="ok">The value being lifted.</param>
-    /// <typeparam name="TOk">The type of the value being lifted.</typeparam>
-    /// <returns>A <see cref="Result{TOk}" />.</returns>
-    public static Result<TOk> ToResultOk<TOk>(this TOk ok) where TOk : notnull
-    {
-        return new Result<TOk>(ok);
-    }
-
-    /// <summary>
     ///     Converts a <see cref="Error" /> to a <see cref="Result{TOk}" />.
     /// </summary>
     /// <param name="error">The error value.</param>
     /// <typeparam name="TOk">The OK type.</typeparam>
     /// <returns>A <see cref="Result{TOk}" />.</returns>
-    public static Result<TOk> ToResultError<TOk>(this Error error) where TOk : notnull
+    public static Result<TOk> ToResult<TOk>(this Error error) where TOk : notnull
     {
         return new Result<TOk>(error);
     }

@@ -56,37 +56,54 @@ public readonly record struct Result<TOk>
     {
         (isOk, ok, error) = (this.IsOk, this._ok, this._error);
     }
-    
+
     /// <summary>
-    /// Implicit operator to convert a value to <see cref="Result{TOk}"/>.
+    ///     Implicit operator to convert a value to <see cref="Result{TOk}" />.
     /// </summary>
     /// <param name="ok">The value being lifted.</param>
-    /// <returns>A <see cref="Result{TOk}"/> containing the lifted value.</returns>
+    /// <returns>A <see cref="Result{TOk}" /> containing the lifted value.</returns>
     public static implicit operator Result<TOk>(TOk ok)
     {
         return new Result<TOk>(ok);
     }
 
     /// <summary>
-    /// Implicit operator to convert a <see cref="Error"/> to a <see cref="Result{TOk}"/>.
+    ///     Implicit operator to convert a <see cref="Error" /> to a <see cref="Result{TOk}" />.
     /// </summary>
     /// <param name="error">The error being lifted.</param>
-    /// <returns>A <see cref="Result{TOk}"/> containing the lifted error.</returns>
+    /// <returns>A <see cref="Result{TOk}" /> containing the lifted error.</returns>
     public static implicit operator Result<TOk>(Error error)
     {
         return new Result<TOk>(error);
     }
 
     /// <summary>
-    /// Alternate for operator implicit.
+    ///     Alternate for operator implicit.
     /// </summary>
-    /// <returns>A <see cref="Result{TOk}"/>.</returns>
+    /// <returns>A <see cref="Result{TOk}" />.</returns>
     /// <remarks>
-    /// Reference: https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/ca2225
+    ///     Reference: https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/ca2225
     /// </remarks>
     // ReSharper disable once UnusedMember.Global
     public Result<TOk> ToResult()
     {
         return this;
+    }
+}
+
+/// <summary>
+///     Helper methods for <see cref="Result{TOk}" />.
+/// </summary>
+public static class Result
+{
+    /// <summary>
+    ///     Lifts a value to a <see cref="Result{TOk}" />.
+    /// </summary>
+    /// <param name="ok">The value being lifted.</param>
+    /// <typeparam name="TOk">The type of the lifted value.</typeparam>
+    /// <returns>A <see cref="Result{TOk}" /> containing the lifted value.</returns>
+    public static Result<TOk> Ok<TOk>(TOk ok) where TOk : notnull
+    {
+        return new Result<TOk>(ok);
     }
 }

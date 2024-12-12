@@ -41,8 +41,8 @@ public static class ExceptionalExtensions
     {
         var (isValue, value, exception) = exceptional;
         return isValue
-            ? value!.ToResultOk()
-            : exception!.ToGenericError().ToResultError<TValue>();
+            ? value!
+            : exception!.ToGenericError().ToResult<TValue>();
     }
 
     /// <summary>
