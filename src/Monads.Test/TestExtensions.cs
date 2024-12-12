@@ -14,7 +14,7 @@ internal static class TestExtensions
     /// <param name="error">The <see cref="Error" /> instance.</param>
     /// <param name="testAction">The test action.</param>
     /// <typeparam name="TError">The concrete type to cast the abstract value to.</typeparam>
-    public static void TestErrorOf<TError>(this Error error, Action<TError> testAction)
+    public static void TestErrorOf<TError>(this Error? error, Action<TError> testAction)
         where TError : Error
     {
         Assert.That(testAction, Is.Not.Null);

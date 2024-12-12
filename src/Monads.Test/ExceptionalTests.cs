@@ -30,7 +30,7 @@ internal static class ExceptionalTests
             Assert.That(exceptional.IsValue, Is.False);
             Assert.That(exceptional.IsException, Is.True);
             Assert.That(isValue, Is.False);
-            Assert.That(value, Is.EqualTo(default(int)));
+            Assert.That(value, Is.EqualTo(0));
             Assert.That(exception, Is.InstanceOf<InvalidOperationException>());
         });
     }
@@ -46,7 +46,7 @@ internal static class ExceptionalTests
             Assert.That(exceptional.IsValue, Is.False);
             Assert.That(exceptional.IsException, Is.True);
             Assert.That(isValue, Is.False);
-            Assert.That(value, Is.EqualTo(default(int)));
+            Assert.That(value, Is.EqualTo(0));
             Assert.That(outException, Is.SameAs(exception));
         });
     }

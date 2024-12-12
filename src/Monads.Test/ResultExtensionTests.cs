@@ -25,13 +25,13 @@ internal static class ResultExtensionTests
     [SuppressMessage("ReSharper", "NullableWarningSuppressionIsUsed")]
     public static void ToResult_Error_ValidatesBehavior()
     {
-        var result = 1234.ToError().ToResult<string>();
+        var result = 1234.ToGenericError().ToResult<string>();
         var (isOk, ok, error) = result;
         Assert.Multiple(() =>
         {
             Assert.That(isOk, Is.False);
             Assert.That(ok, Is.Null);
-            error!.TestErrorOf<Error<int>>(e => { Assert.That(e.Value, Is.EqualTo(1234)); });
+            error!.TestErrorOf<GenericError<int>>(e => { Assert.That(e.Value, Is.EqualTo(1234)); });
         });
     }
 
@@ -42,7 +42,7 @@ internal static class ResultExtensionTests
         _ = Assert.Throws<ArgumentNullException>(() =>
         {
             _ = new Result<int>()
-                .Where(null!, some => new Error<int>(some));
+                .Where(null!, some => new GenericError<int>(some));
         });
     }
 
@@ -105,13 +105,13 @@ internal static class ResultExtensionTests
     {
         var errorActionCalled = false;
         _ = "error"
-            .ToError()
+            .ToGenericError()
             .ToResult<int>()
             .Tap(
                 _ => { Assert.Fail("Should not be called"); },
                 error =>
                 {
-                    error.TestErrorOf<Error<string>>(e => Assert.That(e.Value, Is.EqualTo("error")));
+                    error.TestErrorOf<GenericError<string>>(e => Assert.That(e.Value, Is.EqualTo("error")));
                     errorActionCalled = true;
                 });
         Assert.That(errorActionCalled, Is.True);
@@ -133,18 +133,18 @@ internal static class ResultExtensionTests
     [Test]
     public static void TryError_Error_ReturnsError()
     {
-        var isOk = 1234
-            .ToError()
+        var isError = 1234
+            .ToGenericError()
             .ToResult<int>()
-            .TryError(out var resultError);
-        Assert.That(isOk, Is.True);
-        resultError!.TestErrorOf<Error<int>>(e => { Assert.That(e.Value, Is.EqualTo(1234)); });
+            .TryError(out var error);
+        Assert.That(isError, Is.True);
+        error.TestErrorOf<GenericError<int>>(e => { Assert.That(e.Value, Is.EqualTo(1234)); });
     }
 
     [Test]
     public static void Try_Error_ReturnsError()
     {
-        var error = new Error<string>("error");
+        var error = new GenericError<string>("error");
         var result = new Result<string>(error);
         if (result.Try(out var ok))
             Assert.Fail("Should not be called.");
@@ -165,14 +165,17 @@ internal static class ResultExtensionTests
     [Test]
     public static void MapError_Error_MapsError()
     {
-        _ = new Error<string>("error")
+        _ = new GenericError<string>("error")
             .ToResult<int>()
-            .MapError(_ => 1234.ToError())
+            .MapError(_ => 1234.ToGenericError())
             .Tap(
                 _ => { Assert.Fail("Should not be called."); },
                 error =>
                 {
-                    error.TestErrorOf<Error<int>>(intError => { Assert.That(intError.Value, Is.EqualTo(1234)); });
+                    error.TestErrorOf<GenericError<int>>(intError =>
+                    {
+                        Assert.That(intError.Value, Is.EqualTo(1234));
+                    });
                 });
     }
 
@@ -189,14 +192,17 @@ internal static class ResultExtensionTests
     [Test]
     public static void BindError_Error_MapsError()
     {
-        _ = new Error<string>("error")
+        _ = new GenericError<string>("error")
             .ToResult<int>()
-            .BindError(_ => 1234.ToError().ToResult<int>())
+            .BindError(_ => 1234.ToGenericError().ToResult<int>())
             .Tap(
                 _ => { Assert.Fail("Should not be called."); },
                 error =>
                 {
-                    error.TestErrorOf<Error<int>>(intError => { Assert.That(intError.Value, Is.EqualTo(1234)); });
+                    error.TestErrorOf<GenericError<int>>(intError =>
+                    {
+                        Assert.That(intError.Value, Is.EqualTo(1234));
+                    });
                 });
     }
 

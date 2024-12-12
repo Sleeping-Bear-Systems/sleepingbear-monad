@@ -30,7 +30,7 @@ internal static class ExceptionalExtensionsTests
                 {
                     switch (error)
                     {
-                        case Error<Exception> exceptionError:
+                        case GenericError<Exception> exceptionError:
                             Assert.That(exceptionError.Value, Is.SameAs(exception));
                             break;
                         default:

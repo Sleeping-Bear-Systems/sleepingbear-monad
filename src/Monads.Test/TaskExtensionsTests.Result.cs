@@ -42,13 +42,13 @@ internal static partial class TaskExtensionsTests
     [Test]
     public static async Task MapErrorAsync_AsyncMapErrorFunc_ReturnsMappedValue()
     {
-        _ = await new Error<int>(1234)
+        _ = await new GenericError<int>(1234)
             .ToResult<int>()
             .ToTask()
             .MapErrorAsync(async _ =>
             {
                 await Task.Delay(0).ConfigureAwait(false);
-                return "string".ToError();
+                return "string".ToGenericError();
             })
             .TapAsync(
                 _ => { Assert.Fail("Should not be called."); },
@@ -56,7 +56,7 @@ internal static partial class TaskExtensionsTests
                 {
                     switch (error)
                     {
-                        case Error<string> stringError:
+                        case GenericError<string> stringError:
                             Assert.That(stringError.Value, Is.EqualTo("string"));
                             break;
                         default:
@@ -70,17 +70,17 @@ internal static partial class TaskExtensionsTests
     [Test]
     public static async Task MapErrorAsync_SyncMapErrorFunc_ReturnsMappedValue()
     {
-        _ = await new Error<int>(1234)
+        _ = await new GenericError<int>(1234)
             .ToResult<int>()
             .ToTask()
-            .MapErrorAsync(_ => "string".ToError())
+            .MapErrorAsync(_ => "string".ToGenericError())
             .TapAsync(
                 _ => { Assert.Fail("Should not be called."); },
                 error =>
                 {
                     switch (error)
                     {
-                        case Error<string> stringError:
+                        case GenericError<string> stringError:
                             Assert.That(stringError.Value, Is.EqualTo("string"));
                             break;
                         default:
@@ -124,13 +124,13 @@ internal static partial class TaskExtensionsTests
     [Test]
     public static async Task BindErrorAsync_AsyncBindErrorFunc_ReturnsMappedValue()
     {
-        _ = await new Error<int>(1234)
+        _ = await new GenericError<int>(1234)
             .ToResult<int>()
             .ToTask()
             .BindErrorAsync(async _ =>
             {
                 await Task.Delay(0).ConfigureAwait(false);
-                return "string".ToError().ToResult<int>();
+                return "string".ToGenericError().ToResult<int>();
             })
             .TapAsync(
                 _ => { Assert.Fail("Should not be called."); },
@@ -138,7 +138,7 @@ internal static partial class TaskExtensionsTests
                 {
                     switch (error)
                     {
-                        case Error<string> stringError:
+                        case GenericError<string> stringError:
                             Assert.That(stringError.Value, Is.EqualTo("string"));
                             break;
                         default:
@@ -152,17 +152,17 @@ internal static partial class TaskExtensionsTests
     [Test]
     public static async Task BindErrorAsync_SyncBindErrorFunc_ReturnsMappedValue()
     {
-        _ = await new Error<int>(1234)
+        _ = await new GenericError<int>(1234)
             .ToResult<int>()
             .ToTask()
-            .BindErrorAsync(_ => "string".ToError().ToResult<int>())
+            .BindErrorAsync(_ => "string".ToGenericError().ToResult<int>())
             .TapAsync(
                 _ => { Assert.Fail("Should not be called."); },
                 error =>
                 {
                     switch (error)
                     {
-                        case Error<string> stringError:
+                        case GenericError<string> stringError:
                             Assert.That(stringError.Value, Is.EqualTo("string"));
                             break;
                         default:

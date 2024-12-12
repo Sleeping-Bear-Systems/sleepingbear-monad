@@ -156,7 +156,7 @@ public static class ResultExtensions
     {
         var (isOk, _, error2) = result;
         error = isOk
-            ? default
+            ? null
             : error2!;
         return !isOk;
     }
