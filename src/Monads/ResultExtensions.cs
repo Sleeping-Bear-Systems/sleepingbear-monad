@@ -14,7 +14,7 @@ public static class ResultExtensions
     /// <param name="ok">The value being lifted.</param>
     /// <typeparam name="TOk">The type of the value being lifted.</typeparam>
     /// <returns>A <see cref="Result{TOk}" />.</returns>
-    public static Result<TOk> ToResult<TOk>(this TOk ok) where TOk : notnull
+    public static Result<TOk> ToResultOk<TOk>(this TOk ok) where TOk : notnull
     {
         return new Result<TOk>(ok);
     }
@@ -25,7 +25,7 @@ public static class ResultExtensions
     /// <param name="error">The error value.</param>
     /// <typeparam name="TOk">The OK type.</typeparam>
     /// <returns>A <see cref="Result{TOk}" />.</returns>
-    public static Result<TOk> ToResult<TOk>(this Error error) where TOk : notnull
+    public static Result<TOk> ToResultError<TOk>(this Error error) where TOk : notnull
     {
         return new Result<TOk>(error);
     }
@@ -49,7 +49,7 @@ public static class ResultExtensions
         return result.Try(out var ok)
             ? predicate(ok)
                 ? result
-                : errorFunc(ok).ToResult<TOk>()
+                : errorFunc(ok).ToResultError<TOk>()
             : result;
     }
 
@@ -96,7 +96,7 @@ public static class ResultExtensions
 
         return result.Try(out var ok)
             ? predicate(ok)
-                ? mapFunc(ok).ToResult()
+                ? mapFunc(ok).ToResultOk()
                 : result
             : result;
     }
