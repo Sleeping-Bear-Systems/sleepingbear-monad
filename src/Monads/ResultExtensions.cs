@@ -49,7 +49,7 @@ public static class ResultExtensions
         return result.Try(out var ok)
             ? predicate(ok)
                 ? result
-                : errorFunc(ok).ToResultError<TOk>()
+                : errorFunc(ok)
             : result;
     }
 
@@ -96,7 +96,7 @@ public static class ResultExtensions
 
         return result.Try(out var ok)
             ? predicate(ok)
-                ? mapFunc(ok).ToResultOk()
+                ? mapFunc(ok)
                 : result
             : result;
     }
@@ -178,8 +178,8 @@ public static class ResultExtensions
 
         var (isOk, ok, error) = result;
         return isOk
-            ? new Result<TOkOut>(mapFunc(ok!))
-            : new Result<TOkOut>(error!);
+            ? mapFunc(ok!)
+            : error!;
     }
 
     /// <summary>
@@ -197,8 +197,8 @@ public static class ResultExtensions
 
         var (isOk, ok, error) = result;
         return isOk
-            ? new Result<TOk>(ok!)
-            : new Result<TOk>(mapErrorFunc(error!));
+            ? ok!
+            : mapErrorFunc(error!);
     }
 
     /// <summary>
@@ -219,7 +219,7 @@ public static class ResultExtensions
         var (isOk, ok, error) = result;
         return isOk
             ? bindFunc(ok!)
-            : new Result<TOkOut>(error!);
+            : error!;
     }
 
     /// <summary>
@@ -237,7 +237,7 @@ public static class ResultExtensions
 
         var (isOk, ok, error) = result;
         return isOk
-            ? new Result<TOk>(ok!)
+            ? ok!
             : bindFunc(error!);
     }
 
