@@ -1,20 +1,21 @@
 using System.Diagnostics.CodeAnalysis;
+using SleepingBear.Monad.Core;
 using SleepingBear.Monad.Errors;
 
 namespace SleepingBear.Monad.Monads;
 
 /// <summary>
-///     Extension methods for <see cref="Exceptional{TValue}" />.
+///     Extension and helper methods for <see cref="Exceptional{TValue}" />.
 /// </summary>
-public static class ExceptionalExtensions
+public static class Exceptional
 {
     /// <summary>
-    ///     Converts a value to <see cref="Exceptional{TValue}" />.
+    ///     Lifts a value to a <see cref="Exceptional{TValue}" />.
     /// </summary>
-    /// <param name="value">The value.</param>
-    /// <typeparam name="TValue">The value type.</typeparam>
-    /// <returns>A <see cref="Exceptional{TValue}" />.</returns>
-    public static Exceptional<TValue> ToExceptionalValue<TValue>(this TValue value) where TValue : notnull
+    /// <param name="value">The value being lifted.</param>
+    /// <typeparam name="TValue">The type of the lifted value.</typeparam>
+    /// <returns>A <see cref="Exceptional{TValue}" /> containing the lifted value.</returns>
+    public static Exceptional<TValue> Success<TValue>(TValue value) where TValue : notnull
     {
         return new Exceptional<TValue>(value);
     }
@@ -25,7 +26,7 @@ public static class ExceptionalExtensions
     /// <param name="exception">The exception.></param>
     /// <typeparam name="TValue">The value type.</typeparam>
     /// <returns>A <see cref="Exceptional{TValue}" />.</returns>
-    public static Exceptional<TValue> ToExceptionalException<TValue>(this Exception exception) where TValue : notnull
+    public static Exceptional<TValue> ToExceptional<TValue>(this Exception exception) where TValue : notnull
     {
         return new Exceptional<TValue>(exception);
     }
@@ -39,8 +40,8 @@ public static class ExceptionalExtensions
     [SuppressMessage("ReSharper", "NullableWarningSuppressionIsUsed")]
     public static Result<TValue> ToResult<TValue>(this Exceptional<TValue> exceptional) where TValue : notnull
     {
-        var (isValue, value, exception) = exceptional;
-        return isValue
+        var (isSuccess, value, exception) = exceptional;
+        return isSuccess
             ? value!
             : exception!.ToGenericError().ToResult<TValue>();
     }
@@ -63,8 +64,8 @@ public static class ExceptionalExtensions
     {
         ArgumentNullException.ThrowIfNull(mapFunc);
 
-        var (isValue, value, exception) = exceptional;
-        return isValue
+        var (isSuccess, value, exception) = exceptional;
+        return isSuccess
             ? new Exceptional<TValueOut>(mapFunc(value!))
             : new Exceptional<TValueOut>(exception!);
     }
@@ -89,8 +90,8 @@ public static class ExceptionalExtensions
         ArgumentNullException.ThrowIfNull(valueAction);
         ArgumentNullException.ThrowIfNull(exceptionAction);
 
-        var (isValue, value, exception) = exceptional;
-        if (isValue)
+        var (isSuccess, value, exception) = exceptional;
+        if (isSuccess)
         {
             valueAction(value!);
         }
@@ -122,8 +123,8 @@ public static class ExceptionalExtensions
     {
         ArgumentNullException.ThrowIfNull(bindFunc);
 
-        var (isValue, value, exception) = exceptional;
-        return isValue
+        var (isSuccess, value, exception) = exceptional;
+        return isSuccess
             ? bindFunc(value!)
             : new Exceptional<TValueOut>(exception!);
     }
@@ -139,11 +140,11 @@ public static class ExceptionalExtensions
         this Exceptional<TValue> exceptional,
         [NotNullWhen(true)] out TValue? value) where TValue : notnull
     {
-        var (isValue, value2, _) = exceptional;
-        value = isValue
+        var (isSuccess, value2, _) = exceptional;
+        value = isSuccess
             ? value2!
             : default;
-        return isValue;
+        return isSuccess;
     }
 
     /// <summary>
@@ -163,9 +164,117 @@ public static class ExceptionalExtensions
         ArgumentNullException.ThrowIfNull(valueFunc);
         ArgumentNullException.ThrowIfNull(exceptionFunc);
 
-        var (isValue, value, exception) = exceptional;
-        return isValue
+        var (isSuccess, value, exception) = exceptional;
+        return isSuccess
             ? valueFunc(value!)
             : exceptionFunc(exception!);
+    }
+
+    /// <summary>
+    ///     Tries to execute a function and return an <see cref="Exceptional{TValue}" />.
+    /// </summary>
+    /// <param name="func">The function.</param>
+    /// <typeparam name="TValue">The return value type of function.</typeparam>
+    /// <returns>A <see cref="Exceptional{TValue}" /> containing the return value of the function.</returns>
+    [SuppressMessage("Design", "CA1031:Do not catch general exception types")]
+    public static Exceptional<TValue> TryCatch<TValue>(Func<TValue> func) where TValue : notnull
+    {
+        ArgumentNullException.ThrowIfNull(func);
+
+        try
+        {
+            return func();
+        }
+        catch (Exception ex)
+        {
+            ex.FailFastIfCritical("SleepingBear.Monad.Monads.ExceptionalExtensions.Try");
+            return ex;
+        }
+    }
+
+    /// <summary>
+    ///     Tries to execute a function and return an <see cref="Exceptional{TValue}" />.
+    /// </summary>
+    /// <param name="func">The function.</param>
+    /// <typeparam name="TValue">The type of the function's return value.</typeparam>
+    /// <typeparam name="T1">The type of exception to catch.</typeparam>
+    /// <returns>A <see cref="Exceptional{TValue}" /> containing the return value of the function.</returns>
+    public static Exceptional<TValue> TryCatch<TValue, T1>(Func<TValue> func)
+        where TValue : notnull where T1 : Exception
+    {
+        ArgumentNullException.ThrowIfNull(func);
+
+        try
+        {
+            return func();
+        }
+        catch (T1 ex)
+        {
+            return ex;
+        }
+    }
+
+    /// <summary>
+    ///     Tries to execute a function and return an <see cref="Exceptional{TValue}" />.
+    /// </summary>
+    /// <param name="func">The function.</param>
+    /// <typeparam name="TValue">The type of the function's return value.</typeparam>
+    /// <typeparam name="T1">The type of exception to catch.</typeparam>
+    /// <typeparam name="T2">The type of exception to catch.</typeparam>
+    /// <returns>A <see cref="Exceptional{TValue}" /> containing the return value of the function.</returns>
+    public static Exceptional<TValue> TryCatch<TValue, T1, T2>(Func<TValue> func)
+        where TValue : notnull
+        where T1 : Exception
+        where T2 : Exception
+    {
+        ArgumentNullException.ThrowIfNull(func);
+
+        try
+        {
+            return func();
+        }
+        catch (T1 ex)
+        {
+            return ex;
+        }
+        catch (T2 ex)
+        {
+            return ex;
+        }
+    }
+
+    /// <summary>
+    ///     Tries to execute a function and return an <see cref="Exceptional{TValue}" />.
+    /// </summary>
+    /// <param name="func">The function.</param>
+    /// <typeparam name="TValue">The type of the function's return value.</typeparam>
+    /// <typeparam name="T1">The type of exception to catch.</typeparam>
+    /// <typeparam name="T2">The type of exception to catch.</typeparam>
+    /// <typeparam name="T3">The type of exception to catch.</typeparam>
+    /// <returns>A <see cref="Exceptional{TValue}" /> containing the return value of the function.</returns>
+    public static Exceptional<TValue> TryCatch<TValue, T1, T2, T3>(Func<TValue> func)
+        where TValue : notnull
+        where T1 : Exception
+        where T2 : Exception
+        where T3 : Exception
+    {
+        ArgumentNullException.ThrowIfNull(func);
+
+        try
+        {
+            return func();
+        }
+        catch (T1 ex)
+        {
+            return ex;
+        }
+        catch (T2 ex)
+        {
+            return ex;
+        }
+        catch (T3 ex)
+        {
+            return ex;
+        }
     }
 }

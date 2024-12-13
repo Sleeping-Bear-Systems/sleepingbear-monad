@@ -41,7 +41,7 @@ internal static partial class TaskExtensionsTests
             .BindAsync(async value =>
             {
                 await Task.Delay(0).ConfigureAwait(false);
-                return value.ToUpperInvariant().ToExceptionalValue();
+                return Exceptional.Success(value.ToUpperInvariant());
             })
             .TapAsync(
                 async value =>
