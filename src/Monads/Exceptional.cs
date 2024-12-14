@@ -3,7 +3,7 @@ namespace SleepingBear.Monad.Monads;
 /// <summary>
 ///     Exceptional monad.
 /// </summary>
-/// <typeparam name="TValue">The value type.</typeparam>
+/// <typeparam name="TValue">The type of the lifted value.</typeparam>
 public readonly record struct Exceptional<TValue> where TValue : notnull
 {
     private readonly Exception? _exception;
@@ -34,12 +34,12 @@ public readonly record struct Exceptional<TValue> where TValue : notnull
     }
 
     /// <summary>
-    ///     Property indicating the monad contains a value.
+    ///     Flag indicating the monad contains a value.
     /// </summary>
     public bool IsSuccess { get; }
 
     /// <summary>
-    ///     Property indicating the monad contains an exception.
+    ///     Flag indicating the monad contains an exception.
     /// </summary>
     public bool IsFailure => !this.IsSuccess;
 

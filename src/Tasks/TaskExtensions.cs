@@ -38,7 +38,7 @@ public static class TaskExtensions
     /// <summary>
     ///     Binds a <see cref="Task{TResult}" /> to a <see cref="Task{TResult}" />.
     /// </summary>
-    /// <param name="task">The task being mapped.</param>
+    /// <param name="task">The task being bound.</param>
     /// <param name="bindFunc">The binding function.</param>
     /// <typeparam name="TValue">The type of the value wrapped in the <see cref="Task{TResult}" />.</typeparam>
     /// <typeparam name="TValueOut">The type of the value wrapped in the <see cref="Task{TResult}" /> being returned.</typeparam>
