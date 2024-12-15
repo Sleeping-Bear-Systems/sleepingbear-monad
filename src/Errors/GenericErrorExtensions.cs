@@ -3,7 +3,7 @@ namespace SleepingBear.Monad.Errors;
 /// <summary>
 ///     Extension methods for <see cref="GenericError{TValue}" />.
 /// </summary>
-public static class ErrorExtensions
+public static class GenericError
 {
     /// <summary>
     ///     Wraps a value in a <see cref="GenericError{TValue}" />.

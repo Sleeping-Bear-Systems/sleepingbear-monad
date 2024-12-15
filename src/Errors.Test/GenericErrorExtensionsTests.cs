@@ -1,9 +1,9 @@
 namespace SleepingBear.Monad.Errors.Test;
 
 /// <summary>
-///     Tests for <see cref="ErrorExtensions" />.
+///     Tests for <see cref="GenericError" />.
 /// </summary>
-internal static class ErrorExtensionsTests
+internal static class GenericErrorExtensionsTests
 {
     [Test]
     public static void ToError_WrapValue()

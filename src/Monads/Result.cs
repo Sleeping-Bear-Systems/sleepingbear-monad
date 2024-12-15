@@ -19,7 +19,7 @@ public readonly record struct Result<TOk>
     {
         this.IsOk = false;
         this._ok = default;
-        this._error = new UnknownError();
+        this._error = UnknownError.Value;
     }
 
     internal Result(TOk ok)
